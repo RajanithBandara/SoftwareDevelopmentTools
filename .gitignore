@@ -1,0 +1,285 @@
+##############################
+# Global settings (apply to entire repo)
+##############################
+
+# dotenv files
+.env
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
+
+# Mono auto generated files
+mono_crash.*
+
+# Global miscellaneous files
+.DS_Store
+Thumbs.db
+
+##############################
+# backend (ASP.NET Core/.NET 9.0) settings
+##############################
+
+# Build results
+backend/[Dd]ebug/
+backend/[Dd]ebugPublic/
+backend/[Rr]elease/
+backend/[Rr]eleases/
+backend/x64/
+backend/x86/
+backend/[Ww][Ii][Nn]32/
+backend/[Aa][Rr][Mm]/
+backend/[Aa][Rr][Mm]64/
+backend/bld/
+backend/[Bb]in/
+backend/[Oo]bj/
+backend/[Ll]og/
+backend/[Ll]ogs/
+
+# Visual Studio directories (if backend was built in VS)
+backend/.vs/
+backend/Generated\ Files/
+
+# Test and benchmark results
+backend/[Tt]est[Rr]esult*/
+backend/[Bb]uild[Ll]og.*
+backend/*.VisualState.xml
+backend/TestResult.xml
+backend/nunit-*.xml
+backend/[Dd]ebugPS/
+backend/[Rr]eleasePS/
+backend/dlldata.c
+backend/BenchmarkDotNet.Artifacts/
+
+# .NET specific files
+backend/project.lock.json
+backend/project.fragment.lock.json
+backend/artifacts/
+
+# Tye
+backend/.tye/
+
+# ASP.NET Scaffolding
+backend/ScaffoldingReadMe.txt
+
+# StyleCop
+backend/StyleCopReport.xml
+
+# Files built by Visual Studio (ASP.NET Core)
+backend/*_i.c
+backend/*_p.c
+backend/*_h.h
+backend/*.ilk
+backend/*.meta
+backend/*.obj
+backend/*.iobj
+backend/*.pch
+backend/*.pdb
+backend/*.ipdb
+backend/*.pgc
+backend/*.pgd
+backend/*.rsp
+backend/*.sbr
+backend/*.tlb
+backend/*.tli
+backend/*.tlh
+backend/*.tmp
+backend/*.tmp_proj
+backend/*_wpftmp.csproj
+backend/*.log
+backend/*.tlog
+backend/*.vspscc
+backend/*.vssscc
+backend/.builds
+backend/*.pidb
+backend/*.svclog
+backend/*.scc
+
+# Chutzpah Test files
+backend/_Chutzpah*
+
+# Visual C++ cache files (if applicable)
+backend/ipch/
+backend/*.aps
+backend/*.ncb
+backend/*.opendb
+backend/*.opensdf
+backend/*.sdf
+backend/*.cachefile
+backend/*.VC.db
+backend/*.VC.VC.opendb
+
+# Visual Studio profiler/trace files
+backend/*.psess
+backend/*.vsp
+backend/*.vspx
+backend/*.sap
+backend/*.e2e
+
+# TFS 2012 Local Workspace
+backend/$tf/
+
+# Guidance Automation Toolkit
+backend/*.gpState
+
+# ReSharper files
+backend/_ReSharper*/
+backend/*.[Rr]e[Ss]harper
+backend/*.DotSettings.user
+
+# TeamCity files
+backend/_TeamCity*
+
+# DotCover files
+backend/*.dotCover
+
+# AxoCover files
+backend/.axoCover/*
+!backend/.axoCover/settings.json
+
+# Coverlet files
+backend/coverage*.json
+backend/coverage*.xml
+backend/coverage*.info
+
+# Code coverage results
+backend/*.coverage
+backend/*.coveragexml
+
+# NCrunch files
+backend/_NCrunch_*
+backend/.*crunch*.local.xml
+backend/nCrunchTemp_*
+
+# MightyMoose / AutoTest.Net
+backend/*.mm.*
+backend/AutoTest.Net/
+
+# Web workbench (sass)
+backend/.sass-cache/
+
+# Installshield output folder
+backend/[Ee]xpress/
+
+# DocProject files
+backend/DocProject/buildhelp/
+backend/DocProject/Help/*.HxT
+backend/DocProject/Help/*.HxC
+backend/DocProject/Help/*.hhc
+backend/DocProject/Help/*.hhk
+backend/DocProject/Help/*.hhp
+backend/DocProject/Help/Html2
+backend/DocProject/Help/html
+
+# Click-Once directory and publish files
+backend/publish/
+backend/*.[Pp]ublish.xml
+backend/*.azurePubxml
+backend/*.pubxml
+backend/*.publishproj
+
+# NuGet packages (ASP.NET Core)
+backend/*.nupkg
+backend/*.snupkg
+backend/**/[Pp]ackages/*
+!backend/**/[Pp]ackages/build/
+backend/*.nuget.props
+backend/*.nuget.targets
+
+# Microsoft Azure build and emulator files
+backend/csx/
+backend/*.build.csdef
+backend/ecf/
+backend/rcf/
+
+# Other ASP.NET Core files
+backend/ClientBin/
+backend/~$*
+backend/*~
+backend/*.dbmdl
+backend/*.dbproj.schemaview
+backend/*.jfm
+backend/*.pfx
+backend/*.publishsettings
+backend/orleans.codegen.cs
+
+##############################
+# frontend (React/Node.js) settings
+##############################
+
+# Node modules and build directories
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+
+# Log files
+frontend/npm-debug.log*
+frontend/yarn-error.log*
+
+# Environment files
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+##############################
+# Global tools and editors
+##############################
+
+# VS Code settings
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Local History for VS Code
+.history/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# JetBrains Rider
+*.sln.iml
+.idea/
+
+# Visual Studio for Mac & general Mac bundle stuff
+*.dmg
+*.app
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Global Windows settings
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.swp
