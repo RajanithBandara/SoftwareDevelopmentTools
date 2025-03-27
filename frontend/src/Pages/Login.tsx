@@ -20,7 +20,7 @@ const Login: React.FC = () => {
         setMessage(null);
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/students/login', {
+            const response = await axios.post('http://localhost:5000/api/users/login', {
                 email: data.email,
                 password: data.password,
             });
@@ -83,8 +83,13 @@ const Login: React.FC = () => {
                             )}
                         />
 
-                        <Button type="submit" variant="contained" fullWidth color="primary" disabled={loading}
-                                sx={{ padding: '0.8rem', bgcolor: 'black', '&:hover': { bgcolor: 'gray' } }}
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            fullWidth
+                            color="primary"
+                            disabled={loading}
+                            sx={{ padding: '0.8rem', bgcolor: 'black', '&:hover': { bgcolor: 'gray' } }}
                         >
                             {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
                         </Button>
