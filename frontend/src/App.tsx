@@ -1,21 +1,14 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Register from "@/Pages/Register.tsx";
-import Login from "@/Pages/Login.tsx";
-import Dashboard from "@/Pages/Dashboard.tsx";
+import './App.css'
+import Register from './pages/Register'
+import MapView from "./pages/DashComponents/MapView.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
 
-
-const App: React.FC = () => {
+function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Register />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-            </Routes>
-        </Router>
-    );
-};
+        <>
+            <Register />
+        </>
+    )
+}
 
-export default App;
+export default App

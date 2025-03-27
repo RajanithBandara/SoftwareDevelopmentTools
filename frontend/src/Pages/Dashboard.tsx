@@ -1,99 +1,104 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { Box, Card, CardContent, Typography, Button, CircularProgress } from "@mui/material";
+import React, { useState } from "react";
+import {
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+} from "@ant-design/icons";
+import { FaMapMarked } from "react-icons/fa";
+import { MdOutlineCrisisAlert, MdHistory } from "react-icons/md";
+import { IoHome } from "react-icons/io5";
+import { Button, Layout, Menu, theme } from "antd";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import DashboardHome from "./DashComponents/Home";
+import MapView from "./DashComponents/MapView";
+import AlertView from "./DashComponents/Alerts";
+import HistoricalData from "./DashComponents/HistoricData";
+
+const { Header, Sider, Content } = Layout;
 
 const Dashboard: React.FC = () => {
-    const [userInfo, setUserInfo] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                setLoading(false);
-                return;
-            }
-
-            try {
-                const response = await axios.get("http://localhost:5000/api/students/me", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setUserInfo(response.data);
-            } catch (error) {
-                console.error("Error fetching user info:", error);
-                localStorage.removeItem("token");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUserInfo();
-    }, []);
-
-    const handleLogin = () => navigate("/login");
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        setUserInfo(null);
-        navigate("/login");
-    };
-
-    if (loading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <CircularProgress />
-            </Box>
-        );
-    }
+    const [collapsed, setCollapsed] = useState<boolean>(false);
+    const {
+        token: { colorBgContainer, borderRadiusLG },
+    } = theme.useToken();
 
     return (
-        <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="100vh"
-            bgcolor="#1e1e1e"
-        >
-            <Card sx={{ width: 400, p: 3, backgroundColor: "#2c2c2c", color: "#fff" }}>
-                <CardContent>
-                    {userInfo ? (
-                        <>
-                            <Typography variant="h5" gutterBottom>
-                                Welcome, {userInfo.name}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Email:</strong> {userInfo.email}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Degree Program:</strong> {userInfo.degreeProgram}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Age:</strong> {userInfo.age}
-                            </Typography>
-                            <Box mt={2} display="flex" justifyContent="center">
-                                <Button variant="contained" color="secondary" onClick={handleLogout}>
-                                    Logout
-                                </Button>
-                            </Box>
-                        </>
-                    ) : (
-                        <>
-                            <Typography variant="h6" textAlign="center">
-                                You need to log in first.
-                            </Typography>
-                            <Box mt={2} display="flex" justifyContent="center">
-                                <Button variant="contained" color="primary" onClick={handleLogin}>
-                                    Login
-                                </Button>
-                            </Box>
-                        </>
-                    )}
-                </CardContent>
-            </Card>
-        </Box>
+        <Router>
+            <Layout style={{ height: "100vh" }}>
+                <Sider
+                    theme="light"
+                    trigger={null}
+                    collapsible
+                    collapsed={collapsed}
+                    style={{ height: "100vh" }}
+                >
+                    <div className="demo-logo-vertical" />
+                    <Menu
+                        theme="light"
+                        mode="inline"
+                        defaultSelectedKeys={["1"]}
+                        items={[
+                            {
+                                key: "1",
+                                icon: <IoHome />,
+                                label: <Link to="/">Home</Link>, // Link to Home page
+                            },
+                            {
+                                key: "2",
+                                icon: <FaMapMarked />,
+                                label: <Link to="/MapView">MapView</Link>, // Link to MapView
+                            },
+                            {
+                                key: "3",
+                                icon: <MdOutlineCrisisAlert />,
+                                label: <Link to="/AlertView">Alerts</Link>, // Link to Alerts
+                            },
+                            {
+                                key: "4",
+                                icon: <MdHistory />,
+                                label: <Link to="/History">History</Link>, // Link to History
+                            },
+                        ]}
+                    />
+                </Sider>
+                <Layout>
+                    <Header
+                        style={{
+                            padding: 0,
+                            background: colorBgContainer,
+                        }}
+                    >
+                        <Button
+                            type="text"
+                            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                            onClick={() => setCollapsed(!collapsed)}
+                            style={{
+                                fontSize: "16px",
+                                width: 64,
+                                height: 64,
+                            }}
+                        />
+                    </Header>
+                    <Content
+                        style={{
+                            margin: "24px 16px",
+                            padding: 24,
+                            minHeight: 280,
+                            background: colorBgContainer,
+                            borderRadius: borderRadiusLG,
+                            height: "calc(100vh - 64px)",
+                        }}
+                    >
+                        {/* Define the routes */}
+                        <Routes>
+                            <Route path="/" element={<DashboardHome />} />
+                            <Route path="/MapView" element={<MapView />} />
+                            <Route path="/AlertView" element={<AlertView aqiAlerts={[]} />} />
+                            <Route path="/History" element={<HistoricalData />} />
+                        </Routes>
+                    </Content>
+                </Layout>
+            </Layout>
+        </Router>
     );
 };
 
