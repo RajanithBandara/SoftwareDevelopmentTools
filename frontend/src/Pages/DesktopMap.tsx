@@ -24,7 +24,7 @@ interface Sensor {
     aqiValue: number;
 }
 
-const MapView: React.FC = () => {
+const DesktopMapView: React.FC = () => {
     const [sensors, setSensors] = useState<Sensor[]>([]);
     const defaultCenter: [number, number] = [6.9271, 79.8612]; // Colombo, Sri Lanka
     const zoomLevel = 13;
@@ -47,7 +47,7 @@ const MapView: React.FC = () => {
         <MapContainer
             center={defaultCenter}
             zoom={zoomLevel}
-            style={{ height: "80vh", width: "100%", borderRadius: "20px" }}
+            style={{ height: "100vh", width: "100%", borderRadius: "20px" }}
         >
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -66,4 +66,4 @@ const MapView: React.FC = () => {
     );
 };
 
-export default MapView;
+export default DesktopMapView;

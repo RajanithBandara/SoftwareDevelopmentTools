@@ -4,6 +4,7 @@ import "./App.css";
 import Dashboard from "./pages/Dashboard"; // Dashboard layout with nested routes
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import HomePage from "./pages/HomePage.tsx";
 
 // Create an authentication context to track login state
 export const AuthContext = React.createContext<{
@@ -32,6 +33,7 @@ function App() {
         <AuthContext.Provider value={{ isAuthenticated, setAuth: setIsAuthenticated }}>
             <Router>
                 <Routes>
+                    <Route path="/" element={<HomePage />}/>
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
 

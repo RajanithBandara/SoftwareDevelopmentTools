@@ -27,6 +27,7 @@ builder.Services.AddCors(options =>
 
 // Add controllers
 builder.Services.AddControllers();
+builder.Services.AddHostedService<SensorSimulationService>();
 
 // Configure JWT authentication
 var jwtSettings = configuration.GetSection("JwtSettings");
