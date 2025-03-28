@@ -12,6 +12,8 @@ public class SensorSimulationService : BackgroundService
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<SensorSimulationService> _logger;
     private static readonly Random _random = new();
+    // Define AQI threshold for alert generation.
+    private const int AQIThreshold = 150;
 
     public SensorSimulationService(IServiceScopeFactory scopeFactory, ILogger<SensorSimulationService> logger)
     {
@@ -46,12 +48,29 @@ public class SensorSimulationService : BackgroundService
 
                     dbContext.AirQualityReadings.Add(reading);
                     _logger.LogInformation($"Sensor {sensor.Id}: AQI = {reading.AqiValue} recorded.");
+
+                    // Check if the reading exceeds the threshold.
+                    if (reading.AqiValue >= AQIThreshold)
+                    {
+                        // Create an alert.
+                        var alert = new Alert
+                        {
+                            SensorId = sensor.Id,
+                            AQILevel = reading.AqiValue,
+                            AlertMessage = $"Sensor {sensor.Id} has a high AQI reading of {reading.AqiValue}.",
+                            CreatedAt = DateTime.UtcNow
+                        };
+
+                        dbContext.Alerts.Add(alert);
+                        _logger.LogInformation($"Alert created for Sensor {sensor.Id} with AQI {reading.AqiValue}.");
+                    }
                 }
 
                 await dbContext.SaveChangesAsync(stoppingToken);
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(600), stoppingToken); // Simulate readings every 30 seconds
+            // Simulate readings every 30 minutes.
+            await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
         }
     }
 }

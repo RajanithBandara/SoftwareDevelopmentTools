@@ -7,8 +7,8 @@ import { Button, Layout, Menu, theme, Avatar, Tooltip } from "antd";
 import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
 import DashboardHome from "./DashComponents/Home";
 import MapView from "./DashComponents/MapView";
-import AlertView from "./DashComponents/Alerts";
 import HistoricalData from "./DashComponents/HistoricData";
+import AlertsPage from "./DashComponents/Alerts.tsx";
 
 const { Header, Sider, Content } = Layout;
 
@@ -123,9 +123,8 @@ const Dashboard: React.FC = () => {
                     <Routes>
                         <Route path="/" element={<DashboardHome />} />
                         <Route path="/map" element={<MapView />} />
-                        <Route path="/alerts" element={<AlertView aqiAlerts={[]} />} />
+                        <Route path="/alerts" element={<AlertsPage />} />
                         <Route path="/history" element={<HistoricalData />} />
-                        {/* Fallback: if no nested route matches, redirect to dashboard home */}
                         <Route path="*" element={<Navigate to="/dashboard" replace />} />
                     </Routes>
                 </Content>
