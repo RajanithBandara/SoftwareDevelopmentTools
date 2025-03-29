@@ -63,16 +63,20 @@ const Login: React.FC = () => {
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
             >
                 <Card
                     style={{
                         width: 420,
                         padding: 24,
-                        boxShadow: '0 10px 20px rgba(0,0,0,0.25)',
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
                         borderRadius: '12px',
                         textAlign: 'center',
-                        background: 'rgba(255, 255, 255, 0.9)',
-                        backdropFilter: 'blur(15px)'
+                        background: 'rgba(255, 255, 255, 0.85)',
+                        backdropFilter: 'blur(20px)',
+                        transition: 'all 0.3s ease-in-out',
+                        transform: 'translateY(0px)',
                     }}
                 >
                     <Space direction="vertical" size="large" style={{ width: '100%' }}>
