@@ -22,22 +22,23 @@ public class UsersController : ControllerBase
         _configuration = configuration;
     }
 
+    /// <summary>
+    /// Registers a new user.
+    /// </summary>
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
         if (model == null || string.IsNullOrWhiteSpace(model.Password))
-            return BadRequest("Invalid input data.");
+            return BadRequest(new { message = "Invalid input data." });
 
-        // Check if the email already exists
         if (await _context.Users.AnyAsync(u => u.Email.ToLower() == model.Email.ToLower()))
-            return BadRequest("Email already exists.");
+            return BadRequest(new { message = "Email already exists." });
 
-        // Create the new user
         var user = new User
         {
             Username = model.Name,
             Email = model.Email.ToLower(),
-            Role = model.Role  // Use the Role property from the DTO
+            Role = model.Role
         };
 
         user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
@@ -54,25 +55,29 @@ public class UsersController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Logs in a user and returns a JWT token along with the user role.
+    /// </summary>
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel login)
     {
         if (login == null || string.IsNullOrWhiteSpace(login.Email) || string.IsNullOrWhiteSpace(login.Password))
-            return BadRequest("Invalid login data.");
+            return BadRequest(new { message = "Invalid login data." });
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == login.Email.ToLower());
-
-        if (user == null || string.IsNullOrEmpty(user.PasswordHash))
-            return Unauthorized("Invalid email or password.");
+        if (user == null)
+            return Unauthorized(new { message = "Invalid email or password." });
 
         var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, login.Password);
         if (verificationResult == PasswordVerificationResult.Failed)
-            return Unauthorized("Invalid email or password.");
+            return Unauthorized(new { message = "Invalid email or password." });
 
         var token = GenerateJwtToken(user);
+
         return Ok(new 
         { 
             token, 
+            userRole = user.Role,   // Include role for frontend use
             user = new 
             { 
                 user.Id, 
@@ -83,13 +88,15 @@ public class UsersController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Retrieves the current user's data based on the JWT.
+    /// </summary>
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUser()
     {
         var email = User.FindFirst(ClaimTypes.Email)?.Value;
-
         if (string.IsNullOrEmpty(email))
-            return Unauthorized("User not found.");
+            return Unauthorized(new { message = "User not found." });
 
         var user = await _context.Users
             .Where(u => u.Email.ToLower() == email.ToLower())
@@ -97,11 +104,14 @@ public class UsersController : ControllerBase
             .FirstOrDefaultAsync();
 
         if (user == null)
-            return NotFound("User data not found.");
+            return NotFound(new { message = "User data not found." });
 
         return Ok(user);
     }
 
+    /// <summary>
+    /// Generates a JWT token including user role in the claims.
+    /// </summary>
     private string GenerateJwtToken(User user)
     {
         var jwtKey = _configuration["JwtSettings:SecretKey"];
@@ -115,7 +125,8 @@ public class UsersController : ControllerBase
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Name, user.Username)
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role)  // Include role in JWT
         };
 
         var token = new JwtSecurityToken(
@@ -130,13 +141,13 @@ public class UsersController : ControllerBase
     }
 }
 
-// DTOs
+// DTOs for user registration and login
 public class RegisterModel
 {
-    public string Name { get; set; }        // Maps to User.Username
+    public string Name { get; set; }  
     public string Email { get; set; }
     public string Password { get; set; }
-    public string Role { get; set; }        // Example: "Admin" or "User"
+    public string Role { get; set; }  
 }
 
 public class LoginModel

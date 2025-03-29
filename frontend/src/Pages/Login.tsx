@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { motion } from 'framer-motion';
-import { Button, TextField, Box, Card, CircularProgress, Typography } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
+import React from 'react';
+import {
+    Form,
+    Input,
+    Button,
+    Typography,
+    message,
+    Card,
+    Space
+} from 'antd';
+import {
+    UserOutlined,
+    LockOutlined,
+    LoginOutlined
+} from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+
+const { Title, Text } = Typography;
 
 interface LoginFormData {
     email: string;
@@ -11,99 +23,131 @@ interface LoginFormData {
 }
 
 const Login: React.FC = () => {
-    const [message, setMessage] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const { control, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
+    const [form] = Form.useForm();
     const navigate = useNavigate();
+    const [loading, setLoading] = React.useState(false);
 
-    const onSubmit = async (data: LoginFormData) => {
-        setMessage(null);
+    const onFinish = async (values: LoginFormData) => {
         setLoading(true);
+
         try {
-            const response = await axios.post('http://localhost:5000/api/users/login', {
-                email: data.email,
-                password: data.password,
+            const response = await fetch("http://localhost:5000/api/users/login", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values)
             });
 
-            if (response.status === 200) {
-                localStorage.setItem('token', response.data.token);  // Store token for authentication
-                localStorage.setItem('user', JSON.stringify(response.data.user)); // Store user info
-                setMessage('✅ Login successful!');
-                setTimeout(() => navigate('/dashboard'), 1000);
+            const data = await response.json();
+
+            if (response.ok) {
+                // Successful login
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+
+                message.success('Login Successful!');
+
+                // Navigate to dashboard
+                navigate('/dashboard');
+            } else {
+                // Handle login error
+                message.error(data.message || 'Login failed');
             }
-        } catch (error: any) {
-            // Extract error message robustly from response
-            let errorMsg = 'Invalid credentials';
-            if (error.response) {
-                if (typeof error.response.data === 'string') {
-                    errorMsg = error.response.data;
-                } else if (error.response.data.message) {
-                    errorMsg = error.response.data.message;
-                }
-            }
-            setMessage(`❌ Login failed: ${errorMsg}`);
+        } catch (err) {
+            message.error('Network error. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: 'background.default' }}>
-            <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                style={{ width: '100%', maxWidth: '400px' }}
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+                backgroundColor: '#f0f2f5'
+            }}
+        >
+            <Card
+                style={{
+                    width: 400,
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                }}
             >
-                <Card sx={{ p: 4, borderRadius: 2, boxShadow: 3 }}>
-                    {message && (
-                        <Typography variant="body2" color={message.startsWith('✅') ? 'success.main' : 'error'} align="center" gutterBottom>
-                            {message}
-                        </Typography>
-                    )}
-                    <motion.form
-                        onSubmit={handleSubmit(onSubmit)}
-                        style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+                <Space direction="vertical" size="large" style={{ width: '100%', textAlign: 'center' }}>
+                    <Title level={3} style={{ margin: 0 }}>
+                        Welcome Back
+                    </Title>
+                    <Text type="secondary">
+                        Sign in to continue to your dashboard
+                    </Text>
+                </Space>
+
+                <Form
+                    form={form}
+                    style={{ marginTop: 24 }}
+                    onFinish={onFinish}
+                >
+                    <Form.Item
+                        name="email"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your email!'
+                            },
+                            {
+                                type: 'email',
+                                message: 'Please enter a valid email!'
+                            }
+                        ]}
                     >
-                        <Controller
-                            name="email"
-                            control={control}
-                            rules={{ required: "Email is required" }}
-                            render={({ field }) => (
-                                <TextField {...field} label="Email" variant="outlined" fullWidth error={!!errors.email} helperText={errors.email?.message} />
-                            )}
+                        <Input
+                            prefix={<UserOutlined />}
+                            placeholder="Email Address"
                         />
+                    </Form.Item>
 
-                        <Controller
-                            name="password"
-                            control={control}
-                            rules={{ required: "Password is required" }}
-                            render={({ field }) => (
-                                <TextField {...field} label="Password" variant="outlined" fullWidth type="password" error={!!errors.password} helperText={errors.password?.message} />
-                            )}
+                    <Form.Item
+                        name="password"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your password!'
+                            }
+                        ]}
+                    >
+                        <Input.Password
+                            prefix={<LockOutlined />}
+                            placeholder="Password"
                         />
+                    </Form.Item>
 
+                    <Form.Item>
                         <Button
-                            type="submit"
-                            variant="contained"
-                            fullWidth
-                            color="primary"
-                            disabled={loading}
-                            sx={{ padding: '0.8rem', bgcolor: 'black', '&:hover': { bgcolor: 'gray' } }}
+                            type="primary"
+                            htmlType="submit"
+                            loading={loading}
+                            icon={<LoginOutlined />}
+                            block
                         >
-                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+                            Sign In
                         </Button>
+                    </Form.Item>
 
-                        <Typography variant="body2" align="center" mt={2}>
+                    <Form.Item style={{ textAlign: 'center', marginBottom: 0 }}>
+                        <Text type="secondary">
                             Don't have an account?{' '}
-                            <Button color="primary" onClick={() => navigate('/register')} sx={{ textTransform: 'none' }}>
-                                Register Here
-                            </Button>
-                        </Typography>
-                    </motion.form>
-                </Card>
-            </motion.div>
-        </Box>
+                            <a onClick={() => navigate('/register')}>
+                                Register now
+                            </a>
+                        </Text>
+                    </Form.Item>
+                </Form>
+            </Card>
+        </div>
     );
 };
 

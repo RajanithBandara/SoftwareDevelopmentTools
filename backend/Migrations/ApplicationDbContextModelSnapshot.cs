@@ -46,6 +46,35 @@ namespace backend.Migrations
                     b.ToTable("AirQualityReadings", (string)null);
                 });
 
+            modelBuilder.Entity("Alert", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AQILevel")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("AlertMessage")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("SensorId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SensorId");
+
+                    b.ToTable("Alerts", (string)null);
+                });
+
             modelBuilder.Entity("Sensor", b =>
                 {
                     b.Property<int>("Id")
@@ -55,14 +84,15 @@ namespace backend.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Latitude")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("Location")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<decimal>("Longitude")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("boolean");
@@ -82,7 +112,8 @@ namespace backend.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -90,11 +121,13 @@ namespace backend.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
@@ -102,6 +135,17 @@ namespace backend.Migrations
                 });
 
             modelBuilder.Entity("AirQualityReading", b =>
+                {
+                    b.HasOne("Sensor", "Sensor")
+                        .WithMany()
+                        .HasForeignKey("SensorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sensor");
+                });
+
+            modelBuilder.Entity("Alert", b =>
                 {
                     b.HasOne("Sensor", "Sensor")
                         .WithMany()

@@ -12,6 +12,7 @@ namespace StudentApp.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Sensor> Sensors { get; set; }
         public DbSet<AirQualityReading> AirQualityReadings { get; set; }
+        public DbSet<Alert> Alerts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,6 +29,8 @@ namespace StudentApp.Data
 
             modelBuilder.Entity<AirQualityReading>()
                 .ToTable("AirQualityReadings");
+            modelBuilder.Entity<Alert>()
+                .ToTable("Alerts");
         }
     }
 }
