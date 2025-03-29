@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard"; // Dashboard layout with nested route
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import HomePage from "./pages/HomePage.tsx";
+import AdminDashboard from "./pages/DashComponents/Admin.tsx"; 
 
 // Create an authentication context to track login state
 export const AuthContext = React.createContext<{
@@ -36,6 +37,7 @@ function App() {
                     <Route path="/" element={<HomePage />}/>
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/admin" element={<AdminDashboard />} />
 
                     {/* Nested dashboard routes under /dashboard/* */}
                     <Route
