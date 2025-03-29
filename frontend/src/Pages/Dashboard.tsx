@@ -119,7 +119,7 @@ const Dashboard: React.FC = () => {
                     {!collapsed && <FaCloudSun size={32} color={colors.primary} style={{ marginRight: "10px" }} />}
                     {!collapsed ? (
                         <Text strong style={{ fontSize: "20px", color: colors.primary }}>
-                            Weather Monitor
+                            AQI Meter
                         </Text>
                     ) : (
                         <FaCloudSun size={24} color={colors.primary} />
@@ -242,7 +242,7 @@ const Dashboard: React.FC = () => {
                         />
                         <div style={{ marginLeft: "16px", color: "#ffffff" }}>
                             <Text strong style={{ color: "#ffffff", fontSize: "18px" }}>
-                                Weather Monitoring System
+                                Air Quality Index Monitoring System
                             </Text>
                         </div>
                     </div>
