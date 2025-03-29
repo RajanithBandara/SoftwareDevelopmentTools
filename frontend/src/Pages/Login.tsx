@@ -55,7 +55,7 @@ const Login: React.FC = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: '100vh',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
             }}
         >
             <Card
@@ -63,15 +63,17 @@ const Login: React.FC = () => {
                     width: 400,
                     boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
                     borderRadius: '10px',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(10px)'
                 }}
             >
                 <Space direction="vertical" size="large" style={{ width: '100%' }}>
                     <Title level={3} style={{ margin: 0, color: '#333' }}>
-                        Welcome Back
+                        Weather Monitor Login
                     </Title>
                     <Text type="secondary">
-                        Sign in to continue to your dashboard
+                        Sign in to access real-time weather updates
                     </Text>
                 </Space>
 
