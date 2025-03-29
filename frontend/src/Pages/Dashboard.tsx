@@ -20,12 +20,41 @@ const colors = {
     warning: "#faad14", // Yellow for warnings
     danger: "#f5222d", // Red for alerts/danger
     background: "#f0f8ff", // Light blue background
-    siderBg: "#e6f7ff", // Lighter blue for sider
-    headerBg: "#096dd9", // Darker blue for header
-    cardBg: "#ffffff", // White for cards
     textPrimary: "#262626", // Dark text
     textSecondary: "#8c8c8c", // Secondary text
     borderColor: "#d9e8f6", // Light blue border
+};
+
+// Time-based theme colors
+const timeThemes = {
+    morning: {
+        gradient: "linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)",
+        siderBg: "#e1eeff",
+        primaryText: "#2a5298",
+        borderColor: "#c0d8f7",
+        iconColor: "#4a7fcb"
+    },
+    midday: {
+        gradient: "linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)",
+        siderBg: "#e0f5ff",
+        primaryText: "#0077cc",
+        borderColor: "#b8e7ff",
+        iconColor: "#0086e6"
+    },
+    evening: {
+        gradient: "linear-gradient(120deg, #f6d365 0%, #fda085 100%)",
+        siderBg: "#fff0e0",
+        primaryText: "#e67700",
+        borderColor: "#ffe0c0",
+        iconColor: "#ff8c38"
+    },
+    night: {
+        gradient: "linear-gradient(120deg, #4b6cb7 0%, #182848 100%)",
+        siderBg: "#d6e0f5",
+        primaryText: "#1a377c",
+        borderColor: "#c3d0ea",
+        iconColor: "#3a5fad"
+    }
 };
 
 const Dashboard: React.FC = () => {
@@ -33,10 +62,33 @@ const Dashboard: React.FC = () => {
     const [userRole, setUserRole] = useState<string | null>(null);
     const [username, setUsername] = useState<string | null>(null);
     const [alertCount, ] = useState<number>(null); // Mock alert count
+    const [currentTheme, setCurrentTheme] = useState(timeThemes.midday);
 
     const navigate = useNavigate();
 
+    // Get current time-based theme
+    const getCurrentTimeTheme = () => {
+        const hour = new Date().getHours();
+        if (hour >= 5 && hour < 10) {
+            return timeThemes.morning;
+        } else if (hour >= 10 && hour < 16) {
+            return timeThemes.midday;
+        } else if (hour >= 16 && hour < 18) {
+            return timeThemes.evening;
+        } else {
+            return timeThemes.night;
+        }
+    };
+
     useEffect(() => {
+        // Set initial theme based on time
+        setCurrentTheme(getCurrentTimeTheme());
+
+        // Update theme every hour
+        const themeInterval = setInterval(() => {
+            setCurrentTheme(getCurrentTimeTheme());
+        }, 60 * 60 * 1000);
+
         // Retrieve user role and data from localStorage
         const storedRole = localStorage.getItem("userRole");
         const storedUser = localStorage.getItem("user");
@@ -56,6 +108,8 @@ const Dashboard: React.FC = () => {
         if (!localStorage.getItem("token")) {
             navigate("/login");
         }
+
+        return () => clearInterval(themeInterval);
     }, [navigate]);
 
     const handleLogout = () => {
@@ -78,20 +132,6 @@ const Dashboard: React.FC = () => {
             .substring(0, 2);
     };
 
-    // Get weather-themed background gradient based on time of day
-    const getTimeBasedBackground = () => {
-        const hour = new Date().getHours();
-        if (hour >= 5 && hour < 10) { // Morning
-            return "linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)";
-        } else if (hour >= 10 && hour < 16) { // Midday
-            return "linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)";
-        } else if (hour >= 16 && hour < 20) { // Evening
-            return "linear-gradient(120deg, #f6d365 0%, #fda085 100%)";
-        } else { // Night
-            return "linear-gradient(120deg, #4b6cb7 0%, #182848 100%)";
-        }
-    };
-
     return (
         <Layout style={{ height: "100vh" }}>
             <Sider
@@ -101,8 +141,9 @@ const Dashboard: React.FC = () => {
                     position: "relative",
                     height: "100vh",
                     overflow: "auto",
-                    background: colors.siderBg,
+                    background: currentTheme.siderBg,
                     boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+                    transition: "background 0.3s ease"
                 }}
                 trigger={null} // Remove the default collapse trigger
                 collapsible
@@ -113,16 +154,16 @@ const Dashboard: React.FC = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         padding: "24px 0",
-                        borderBottom: `1px solid ${colors.borderColor}`,
+                        borderBottom: `1px solid ${currentTheme.borderColor}`,
                     }}
                 >
-                    {!collapsed && <FaCloudSun size={32} color={colors.primary} style={{ marginRight: "10px" }} />}
+                    {!collapsed && <FaCloudSun size={32} color={currentTheme.iconColor} style={{ marginRight: "10px" }} />}
                     {!collapsed ? (
-                        <Text strong style={{ fontSize: "20px", color: colors.primary }}>
+                        <Text strong style={{ fontSize: "20px", color: currentTheme.primaryText }}>
                             AQI Meter
                         </Text>
                     ) : (
-                        <FaCloudSun size={24} color={colors.primary} />
+                        <FaCloudSun size={24} color={currentTheme.iconColor} />
                     )}
                 </div>
 
@@ -132,22 +173,22 @@ const Dashboard: React.FC = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         padding: "16px 0",
-                        borderBottom: `1px solid ${colors.borderColor}`,
+                        borderBottom: `1px solid ${currentTheme.borderColor}`,
                     }}
                 >
                     <Avatar
                         size={collapsed ? 40 : 50}
                         style={{
-                            backgroundColor: colors.primary,
+                            backgroundColor: currentTheme.iconColor,
                             verticalAlign: "middle",
-                            boxShadow: "0 2px 5px rgba(24, 144, 255, 0.3)"
+                            boxShadow: `0 2px 5px rgba(0, 0, 0, 0.2)`
                         }}
                     >
                         {getInitials()}
                     </Avatar>
                     {!collapsed && (
                         <div style={{ marginLeft: "12px" }}>
-                            <Text strong style={{ fontSize: "15px", display: "block" }}>
+                            <Text strong style={{ fontSize: "15px", display: "block", color: currentTheme.primaryText }}>
                                 {username || "User"}
                             </Text>
                             <Text type="secondary" style={{ fontSize: "12px" }}>
@@ -166,10 +207,10 @@ const Dashboard: React.FC = () => {
                         padding: "12px 0"
                     }}
                 >
-                    <Menu.Item key="1" icon={<IoHome size={18} color={colors.primary} />}>
+                    <Menu.Item key="1" icon={<IoHome size={18} color={currentTheme.iconColor} />}>
                         <Link to="/dashboard" style={{ color: colors.textPrimary }}>Dashboard</Link>
                     </Menu.Item>
-                    <Menu.Item key="2" icon={<FaMapMarked size={18} color={colors.primary} />}>
+                    <Menu.Item key="2" icon={<FaMapMarked size={18} color={currentTheme.iconColor} />}>
                         <Link to="/dashboard/map" style={{ color: colors.textPrimary }}>AQI Map</Link>
                     </Menu.Item>
                     <Menu.Item key="3" icon={
@@ -179,11 +220,11 @@ const Dashboard: React.FC = () => {
                     }>
                         <Link to="/dashboard/alerts" style={{ color: colors.textPrimary }}>Alerts</Link>
                     </Menu.Item>
-                    <Menu.Item key="4" icon={<MdHistory size={18} color={colors.primary} />}>
+                    <Menu.Item key="4" icon={<MdHistory size={18} color={currentTheme.iconColor} />}>
                         <Link to="/dashboard/history" style={{ color: colors.textPrimary }}>AQI History</Link>
                     </Menu.Item>
                     {userRole === "admin" && (
-                        <Menu.Item key="5" icon={<IoSettingsSharp size={18} color={colors.primary} />}>
+                        <Menu.Item key="5" icon={<IoSettingsSharp size={18} color={currentTheme.iconColor} />}>
                             <Link to="/dashboard/settings" style={{ color: colors.textPrimary }}>Sensor Settings</Link>
                         </Menu.Item>
                     )}
@@ -195,20 +236,21 @@ const Dashboard: React.FC = () => {
                         width: "100%",
                         padding: "16px",
                         textAlign: "center",
-                        borderTop: `1px solid ${colors.borderColor}`,
-                        background: colors.siderBg,
+                        borderTop: `1px solid ${currentTheme.borderColor}`,
+                        background: currentTheme.siderBg,
                     }}
                 >
                     <Tooltip title="Logout">
                         <Button
-                            icon={<LogoutOutlined />}
+                            icon={<LogoutOutlined style={{ color: currentTheme.iconColor }} />}
                             onClick={handleLogout}
                             block
                             style={{
                                 borderRadius: "6px",
                                 height: "40px",
-                                color: colors.textPrimary,
-                                borderColor: colors.borderColor
+                                color: currentTheme.primaryText,
+                                borderColor: currentTheme.borderColor,
+                                background: "transparent"
                             }}
                         >
                             {!collapsed && "Logout"}
@@ -220,12 +262,13 @@ const Dashboard: React.FC = () => {
                 <Header
                     style={{
                         padding: "0 24px",
-                        background: getTimeBasedBackground(),
+                        background: currentTheme.gradient,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
                         height: "64px",
                         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                        transition: "background 0.3s ease"
                     }}
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
@@ -261,7 +304,7 @@ const Dashboard: React.FC = () => {
                         </Tooltip>
                         <Avatar style={{
                             backgroundColor: "#ffffff",
-                            color: colors.primary,
+                            color: currentTheme.iconColor,
                             verticalAlign: "middle"
                         }}>
                             {getInitials()}
