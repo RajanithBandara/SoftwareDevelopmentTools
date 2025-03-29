@@ -33,7 +33,7 @@ const Dashboard: React.FC = () => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const [userRole, setUserRole] = useState<string | null>(null);
     const [username, setUsername] = useState<string | null>(null);
-    const [alertCount, setAlertCount] = useState<number>(3); // Mock alert count
+    const [alertCount, ] = useState<number>(null); // Mock alert count
 
     const navigate = useNavigate();
 
