@@ -3,23 +3,18 @@ import { MenuFoldOutlined, MenuUnfoldOutlined, LogoutOutlined } from "@ant-desig
 import { FaMapMarked } from "react-icons/fa";
 import { MdOutlineCrisisAlert, MdHistory } from "react-icons/md";
 import { IoHome, IoSettingsSharp } from "react-icons/io5";
-import { Button, Layout, Menu, theme, Avatar, Tooltip, Typography } from "antd";
+import { Button, Layout, Menu, theme, Avatar, Tooltip } from "antd";
 import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
 import DashboardHome from "./DashComponents/Home";
 import MapView from "./DashComponents/MapView";
 import HistoricalData from "./DashComponents/HistoricData";
 import AlertsPage from "./DashComponents/Alerts";
-import axios from "axios";
 
 const { Header, Sider, Content } = Layout;
-const { Text } = Typography;
 
 const Dashboard: React.FC = () => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const [userRole, setUserRole] = useState<string | null>(null);
-    const [username, setUsername] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(true);
-
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -29,64 +24,13 @@ const Dashboard: React.FC = () => {
         // Fetch user role from sessionStorage/localStorage
         const role = sessionStorage.getItem("userRole") || localStorage.getItem("userRole");
         setUserRole(role);
-
-        // Fetch user data from backend
-        fetchUserData();
     }, []);
-
-    const fetchUserData = async () => {
-        try {
-            setLoading(true);
-            // Get token from storage
-            const token = localStorage.getItem("token");
-
-            if (!token) {
-                navigate("/login");
-                return;
-            }
-
-            // Make API call to fetch user data
-            const response = await axios.get("/api/user/profile", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            if (response.data && response.data.username) {
-                setUsername(response.data.username);
-                // Optionally update user role if it comes from the API
-                if (response.data.role) {
-                    setUserRole(response.data.role);
-                    sessionStorage.setItem("userRole", response.data.role);
-                }
-            }
-        } catch (error) {
-            console.error("Failed to fetch user data:", error);
-            // Handle error - maybe redirect to login if unauthorized
-            if (axios.isAxiosError(error) && error.response?.status === 401) {
-                handleLogout();
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleLogout = () => {
         localStorage.removeItem("token");
         sessionStorage.removeItem("user");
         sessionStorage.removeItem("userRole");
         navigate("/login");
-    };
-
-    // Get initials for avatar
-    const getInitials = () => {
-        if (!username) return "U";
-        return username
-            .split(" ")
-            .map(name => name[0])
-            .join("")
-            .toUpperCase()
-            .substring(0, 2);
     };
 
     return (
@@ -155,12 +99,7 @@ const Dashboard: React.FC = () => {
                         onClick={() => setCollapsed(!collapsed)}
                         style={{ fontSize: "16px", width: 64, height: 64 }}
                     />
-                    <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                        {!loading && username && (
-                            <Text style={{ fontSize: "14px" }}>
-                                Welcome, <strong>{username}</strong>
-                            </Text>
-                        )}
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                         <Tooltip title="Logout">
                             <Button
                                 type="text"
@@ -169,11 +108,7 @@ const Dashboard: React.FC = () => {
                                 style={{ fontSize: "16px" }}
                             />
                         </Tooltip>
-                        <Tooltip title={username || "User"}>
-                            <Avatar style={{ backgroundColor: "#1890ff", verticalAlign: "middle" }}>
-                                {getInitials()}
-                            </Avatar>
-                        </Tooltip>
+                        <Avatar style={{ backgroundColor: "#1890ff", verticalAlign: "middle" }}>U</Avatar>
                     </div>
                 </Header>
                 <Content
