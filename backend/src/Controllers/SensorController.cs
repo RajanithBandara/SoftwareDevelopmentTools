@@ -38,4 +38,33 @@ public class SensorsController : ControllerBase
 
         return Ok(sensorData);
     }
+    [HttpGet("latest-readings")]
+    public async Task<IActionResult> GetLatestSensorReadings()
+    {
+        var latestReadings = await _context.AirQualityReadings
+            .GroupBy(r => r.SensorId)
+            .Select(g => new 
+            {
+                SensorId = g.Key,
+                Location = g.FirstOrDefault().Sensor.Location, // Assuming the Sensor has a Location property
+                Status = g.FirstOrDefault().Sensor.Status,   // Assuming the Sensor has a Status property
+                Readings = g.OrderByDescending(r => r.RecordedAt)
+                    .Take(4)
+                    .Select(r => new 
+                    {
+                        r.Id,
+                        r.AqiValue,
+                        r.RecordedAt
+                    })
+                    .ToList()
+            })
+            .ToListAsync();
+
+        if (!latestReadings.Any())
+        {
+            return NotFound(new { message = "No active sensors found." });
+        }
+
+        return Ok(latestReadings);
+    }
 }
