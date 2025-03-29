@@ -366,21 +366,18 @@ const DashboardHome = () => {
                     value={stats.sensorCount}
                     icon={<EnvironmentOutlined />}
                     color="#1677ff"
-                    trend={2.5}
                 />
                 <StatCard
                     title="Active Alerts"
                     value={stats.alertCount}
                     icon={<AlertOutlined />}
                     color="#ff4d4f"
-                    trend={-5.3}
                 />
                 <StatCard
                     title="Total Readings"
                     value={stats.readingCount}
                     icon={<MdOutlineSensors />}
                     color="#52c41a"
-                    trend={12.7}
                 />
                 <StatCard
                     title="System Health"

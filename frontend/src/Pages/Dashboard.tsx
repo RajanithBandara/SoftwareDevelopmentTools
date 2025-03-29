@@ -14,7 +14,6 @@ import SensorManagement from "./DashComponents/Settings.tsx";
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
 
-// Weather-themed color palette
 const colors = {
     primary: "#1890ff", // Sky blue
     secondary: "#52c41a", // Green for healthy status
@@ -120,7 +119,7 @@ const Dashboard: React.FC = () => {
                     {!collapsed && <FaCloudSun size={32} color={colors.primary} style={{ marginRight: "10px" }} />}
                     {!collapsed ? (
                         <Text strong style={{ fontSize: "20px", color: colors.primary }}>
-                            Weather Monitor
+                            AQI Meter
                         </Text>
                     ) : (
                         <FaCloudSun size={24} color={colors.primary} />
@@ -171,7 +170,7 @@ const Dashboard: React.FC = () => {
                         <Link to="/dashboard" style={{ color: colors.textPrimary }}>Dashboard</Link>
                     </Menu.Item>
                     <Menu.Item key="2" icon={<FaMapMarked size={18} color={colors.primary} />}>
-                        <Link to="/dashboard/map" style={{ color: colors.textPrimary }}>Weather Map</Link>
+                        <Link to="/dashboard/map" style={{ color: colors.textPrimary }}>AQI Map</Link>
                     </Menu.Item>
                     <Menu.Item key="3" icon={
                         <Badge count={alertCount} size="small" offset={[2, 0]}>
@@ -181,7 +180,7 @@ const Dashboard: React.FC = () => {
                         <Link to="/dashboard/alerts" style={{ color: colors.textPrimary }}>Alerts</Link>
                     </Menu.Item>
                     <Menu.Item key="4" icon={<MdHistory size={18} color={colors.primary} />}>
-                        <Link to="/dashboard/history" style={{ color: colors.textPrimary }}>Weather History</Link>
+                        <Link to="/dashboard/history" style={{ color: colors.textPrimary }}>AQI History</Link>
                     </Menu.Item>
                     {userRole === "admin" && (
                         <Menu.Item key="5" icon={<IoSettingsSharp size={18} color={colors.primary} />}>
@@ -243,7 +242,7 @@ const Dashboard: React.FC = () => {
                         />
                         <div style={{ marginLeft: "16px", color: "#ffffff" }}>
                             <Text strong style={{ color: "#ffffff", fontSize: "18px" }}>
-                                Weather Monitoring System
+                                Air Quality Index Monitoring System
                             </Text>
                         </div>
                     </div>
