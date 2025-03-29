@@ -71,16 +71,16 @@ const Login: React.FC = () => {
                         boxShadow: '0 10px 20px rgba(0,0,0,0.25)',
                         borderRadius: '12px',
                         textAlign: 'center',
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        backdropFilter: 'blur(12px)'
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        backdropFilter: 'blur(15px)'
                     }}
                 >
                     <Space direction="vertical" size="large" style={{ width: '100%' }}>
                         <Title level={2} style={{ margin: 0, color: '#2c3e50' }}>
-                            ☁️ Weather Monitor Login
+                            🌍 AQI Monitor Login
                         </Title>
                         <Text type="secondary" style={{ fontSize: '16px' }}>
-                            Stay updated with real-time weather reports
+                            Stay updated with real-time air quality reports
                         </Text>
                     </Space>
 
