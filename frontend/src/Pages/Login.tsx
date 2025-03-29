@@ -55,62 +55,78 @@ const Login: React.FC = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: '100vh',
-                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                overflow: 'hidden'
             }}
         >
-            <Card
-                style={{
-                    width: 400,
-                    boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
-                    borderRadius: '10px',
-                    textAlign: 'center',
-                    background: 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(10px)'
-                }}
+            <motion.div
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
             >
-                <Space direction="vertical" size="large" style={{ width: '100%' }}>
-                    <Title level={3} style={{ margin: 0, color: '#333' }}>
-                        Weather Monitor Login
-                    </Title>
-                    <Text type="secondary">
-                        Sign in to access real-time weather updates
-                    </Text>
-                </Space>
-
-                <Form form={form} style={{ marginTop: 24 }} onFinish={onFinish}>
-                    <Form.Item
-                        name="email"
-                        rules={[
-                            { required: true, message: 'Please input your email!' },
-                            { type: 'email', message: 'Please enter a valid email!' }
-                        ]}
-                    >
-                        <Input prefix={<UserOutlined />} placeholder="Email Address" />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="password"
-                        rules={[{ required: true, message: 'Please input your password!' }]}
-                    >
-                        <Input.Password prefix={<LockOutlined />} placeholder="Password" />
-                    </Form.Item>
-
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" loading={loading} icon={<LoginOutlined />} block>
-                            Sign In
-                        </Button>
-                    </Form.Item>
-
-                    <Form.Item style={{ textAlign: 'center', marginBottom: 0 }}>
-                        <Text type="secondary">
-                            Don't have an account?{' '}
-                            <a onClick={() => navigate('/register')} style={{ color: '#1890ff' }}>
-                                Register now
-                            </a>
+                <Card
+                    style={{
+                        width: 420,
+                        padding: 24,
+                        boxShadow: '0 10px 20px rgba(0,0,0,0.25)',
+                        borderRadius: '12px',
+                        textAlign: 'center',
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        backdropFilter: 'blur(12px)'
+                    }}
+                >
+                    <Space direction="vertical" size="large" style={{ width: '100%' }}>
+                        <Title level={2} style={{ margin: 0, color: '#2c3e50' }}>
+                            ☁️ Weather Monitor Login
+                        </Title>
+                        <Text type="secondary" style={{ fontSize: '16px' }}>
+                            Stay updated with real-time weather reports
                         </Text>
-                    </Form.Item>
-                </Form>
-            </Card>
+                    </Space>
+
+                    <Form form={form} style={{ marginTop: 24 }} onFinish={onFinish}>
+                        <Form.Item
+                            name="email"
+                            rules={[
+                                { required: true, message: 'Please input your email!' },
+                                { type: 'email', message: 'Please enter a valid email!' }
+                            ]}
+                        >
+                            <Input prefix={<UserOutlined />} placeholder="Email Address" size="large" />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="password"
+                            rules={[{ required: true, message: 'Please input your password!' }]}
+                        >
+                            <Input.Password prefix={<LockOutlined />} placeholder="Password" size="large" />
+                        </Form.Item>
+
+                        <Form.Item>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                loading={loading}
+                                icon={<LoginOutlined />}
+                                block
+                                size="large"
+                                style={{ borderRadius: '8px', fontSize: '16px' }}
+                            >
+                                Sign In
+                            </Button>
+                        </Form.Item>
+
+                        <Form.Item style={{ textAlign: 'center', marginBottom: 0 }}>
+                            <Text type="secondary" style={{ fontSize: '14px' }}>
+                                Don't have an account?{' '}
+                                <a onClick={() => navigate('/register')} style={{ color: '#1890ff', fontWeight: 'bold' }}>
+                                    Register now
+                                </a>
+                            </Text>
+                        </Form.Item>
+                    </Form>
+                </Card>
+            </motion.div>
         </motion.div>
     );
 };
