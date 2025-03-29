@@ -1,18 +1,6 @@
-import React from 'react';
-import {
-    Form,
-    Input,
-    Button,
-    Typography,
-    message,
-    Card,
-    Space
-} from 'antd';
-import {
-    UserOutlined,
-    LockOutlined,
-    LoginOutlined
-} from '@ant-design/icons';
+import React, { useState } from 'react';
+import { Form, Input, Button, Typography, message, Card, Space } from 'antd';
+import { UserOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
@@ -25,7 +13,7 @@ interface LoginFormData {
 const Login: React.FC = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
-    const [loading, setLoading] = React.useState(false);
+    const [loading, setLoading] = useState(false);
 
     const onFinish = async (values: LoginFormData) => {
         setLoading(true);
@@ -42,20 +30,21 @@ const Login: React.FC = () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Successful login
+                // Store the token, user, and userRole directly from the API response
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('userRole', data.userRole);
                 localStorage.setItem('user', JSON.stringify(data.user));
 
-                message.success('Login Successful!');
+                message.success(`Welcome back, ${data.user.username}!`);
 
-                // Navigate to dashboard
+                // Navigate to the dashboard
                 navigate('/dashboard');
             } else {
-                // Handle login error
                 message.error(data.message || 'Login failed');
             }
         } catch (err) {
             message.error('Network error. Please try again.');
+            console.error(err);
         } finally {
             setLoading(false);
         }

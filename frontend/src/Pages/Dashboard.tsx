@@ -3,7 +3,7 @@ import { MenuFoldOutlined, MenuUnfoldOutlined, LogoutOutlined } from "@ant-desig
 import { FaMapMarked } from "react-icons/fa";
 import { MdOutlineCrisisAlert, MdHistory } from "react-icons/md";
 import { IoHome, IoSettingsSharp } from "react-icons/io5";
-import { Button, Layout, Menu, theme, Avatar, Tooltip } from "antd";
+import { Button, Layout, Menu, theme, Avatar, Tooltip, Typography } from "antd";
 import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
 import DashboardHome from "./DashComponents/Home";
 import MapView from "./DashComponents/MapView";
@@ -11,26 +11,58 @@ import HistoricalData from "./DashComponents/HistoricData";
 import AlertsPage from "./DashComponents/Alerts";
 
 const { Header, Sider, Content } = Layout;
+const { Text } = Typography;
 
 const Dashboard: React.FC = () => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const [userRole, setUserRole] = useState<string | null>(null);
+    const [username, setUsername] = useState<string | null>(null);
+
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Fetch user role from sessionStorage/localStorage
-        const role = sessionStorage.getItem("userRole") || localStorage.getItem("userRole");
-        setUserRole(role);
-    }, []);
+        // Retrieve user role and data from localStorage
+        const storedRole = localStorage.getItem("userRole");
+        const storedUser = localStorage.getItem("user");
+
+        if (storedRole) {
+            setUserRole(storedRole.toLowerCase());
+        }
+        if (storedUser) {
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                setUsername(parsedUser.username);
+            } catch (error) {
+                console.error("Failed to parse user data:", error);
+            }
+        }
+        // If no token is found, redirect to login
+        if (!localStorage.getItem("token")) {
+            navigate("/login");
+        }
+    }, [navigate]);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("userRole");
         sessionStorage.removeItem("user");
         sessionStorage.removeItem("userRole");
         navigate("/login");
+    };
+
+    // Get initials for the Avatar
+    const getInitials = () => {
+        if (!username) return "U";
+        return username
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .toUpperCase()
+            .substring(0, 2);
     };
 
     return (
@@ -41,6 +73,7 @@ const Dashboard: React.FC = () => {
                 collapsed={collapsed}
                 width={250}
                 style={{
+                    position: "relative",
                     height: "100vh",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                     overflow: "auto",
@@ -56,10 +89,12 @@ const Dashboard: React.FC = () => {
                     }}
                 >
                     <Avatar size={collapsed ? 40 : 64} style={{ backgroundColor: "#1890ff", verticalAlign: "middle" }}>
-                        AQ
+                        {getInitials()}
                     </Avatar>
                     {!collapsed && (
-                        <span style={{ marginLeft: "10px", fontSize: "18px", fontWeight: 600 }}>Air Quality</span>
+                        <span style={{ marginLeft: "10px", fontSize: "18px", fontWeight: 600 }}>
+              {username || "User"}
+            </span>
                     )}
                 </div>
                 <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]} style={{ borderRight: "none" }}>
@@ -81,6 +116,22 @@ const Dashboard: React.FC = () => {
                         </Menu.Item>
                     )}
                 </Menu>
+                <div
+                    style={{
+                        position: "absolute",
+                        bottom: 0,
+                        width: "100%",
+                        padding: "10px",
+                        textAlign: "center",
+                        borderTop: "1px solid #f0f0f0",
+                    }}
+                >
+                    <Tooltip title="Logout">
+                        <Button type="text" icon={<LogoutOutlined />} onClick={handleLogout} block>
+                            {!collapsed && "Logout"}
+                        </Button>
+                    </Tooltip>
+                </div>
             </Sider>
             <Layout>
                 <Header
@@ -91,6 +142,7 @@ const Dashboard: React.FC = () => {
                         alignItems: "center",
                         justifyContent: "space-between",
                         boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                        height: "64px",
                     }}
                 >
                     <Button
@@ -101,14 +153,11 @@ const Dashboard: React.FC = () => {
                     />
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                         <Tooltip title="Logout">
-                            <Button
-                                type="text"
-                                icon={<LogoutOutlined />}
-                                onClick={handleLogout}
-                                style={{ fontSize: "16px" }}
-                            />
+                            <Button type="text" icon={<LogoutOutlined />} onClick={handleLogout} style={{ fontSize: "16px" }} />
                         </Tooltip>
-                        <Avatar style={{ backgroundColor: "#1890ff", verticalAlign: "middle" }}>U</Avatar>
+                        <Avatar style={{ backgroundColor: "#1890ff", verticalAlign: "middle" }}>
+                            {getInitials()}
+                        </Avatar>
                     </div>
                 </Header>
                 <Content
