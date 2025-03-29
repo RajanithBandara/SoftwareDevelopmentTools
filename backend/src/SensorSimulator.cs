@@ -85,6 +85,6 @@ public class SensorSimulationService : BackgroundService
         double randomFluctuation = _random.NextDouble() * 20 - 10; // Small random variation (-10 to +10)
         double trendFactor = (previousAqi * 0.9) + (timeFactor * 50) + randomFluctuation;
 
-        return Math.Clamp(trendFactor, 0, 500); // Ensure AQI stays within valid range
+        return Math.Clamp(trendFactor, 30, 500); // Ensure AQI stays within valid range
     }
 }

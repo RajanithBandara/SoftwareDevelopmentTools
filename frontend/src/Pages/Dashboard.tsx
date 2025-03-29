@@ -327,7 +327,7 @@ const Dashboard: React.FC = () => {
                             <Route path="/map" element={<MapView />} />
                             <Route path="/alerts" element={<AlertsPage />} />
                             <Route path="/history" element={<HistoricalData />} />
-                            {userRole === "admin" && <Route path="/settings" element={<SensorManagement />} />}
+                            {(userRole === "admin" || userRole == "data analyst") && <Route path="/settings" element={<SensorManagement />} />}
                             <Route path="*" element={<Navigate to="/dashboard" replace />} />
                         </Routes>
                     </div>

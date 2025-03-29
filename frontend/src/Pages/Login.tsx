@@ -62,9 +62,9 @@ const Login: React.FC = () => {
             <motion.div
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 1.01 }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+                whileHover={{ scale: 1.005 }}
+                whileTap={{ scale: 1.006 }}
             >
                 <Card
                     style={{
