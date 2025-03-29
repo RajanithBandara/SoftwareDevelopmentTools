@@ -83,6 +83,9 @@ namespace backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("LastAqi")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("Latitude")
                         .HasColumnType("decimal(9,6)");
 
