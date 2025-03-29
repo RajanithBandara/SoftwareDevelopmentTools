@@ -1,9 +1,12 @@
 import React from 'react';
-import { Layout, Menu, Button, Table, Space, Modal, Form, Input, message } from 'antd';
-import { UserOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Layout, Menu, Button, Table, Space, Modal, Form, Input, Select, message } from 'antd';
+import { UserOutlined, PlusOutlined, DeleteOutlined, EditOutlined, LogoutOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 
 const { Header, Sider, Content } = Layout;
+const { Option } = Select;
+
+const roles = ["Admin", "Data Analyst", "Environmental Officer", "Viewer"];
 
 const AdminDashboard: React.FC = () => {
     const [collapsed, setCollapsed] = React.useState(false);
@@ -13,6 +16,7 @@ const AdminDashboard: React.FC = () => {
 
     const showUserModal = () => setIsModalVisible(true);
     const handleCancel = () => setIsModalVisible(false);
+    const handleLogout = () => message.success('Logged out successfully!');
 
     const handleAddUser = () => {
         form.validateFields().then(values => {
@@ -27,14 +31,19 @@ const AdminDashboard: React.FC = () => {
 
     const columns = [
         {
-            title: 'Username',
-            dataIndex: 'username',
-            key: 'username',
+            title: 'Full Name',
+            dataIndex: 'name',
+            key: 'name',
         },
         {
             title: 'Email',
             dataIndex: 'email',
             key: 'email',
+        },
+        {
+            title: 'Role',
+            dataIndex: 'role',
+            key: 'role',
         },
         {
             title: 'Actions',
@@ -58,8 +67,11 @@ const AdminDashboard: React.FC = () => {
             </Sider>
 
             <Layout>
-                <Header style={{ background: '#fff', padding: 0, textAlign: 'center', fontSize: '20px', fontWeight: 'bold' }}>
-                    Admin Dashboard
+                <Header style={{ background: '#fff', padding: '0 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '20px', fontWeight: 'bold' }}>
+                    <span>Admin Dashboard</span>
+                    <Button type="primary" icon={<LogoutOutlined />} onClick={handleLogout} danger>
+                        Logout
+                    </Button>
                 </Header>
                 <Content style={{ margin: '16px' }}>
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
@@ -73,11 +85,19 @@ const AdminDashboard: React.FC = () => {
 
             <Modal title="Add User" visible={isModalVisible} onCancel={handleCancel} onOk={handleAddUser}>
                 <Form form={form} layout="vertical">
-                    <Form.Item name="username" label="Username" rules={[{ required: true, message: 'Please enter a username!' }]}>
-                        <Input placeholder="Enter username" />
+                    <Form.Item name="name" label="Full Name" rules={[{ required: true, message: 'Please enter full name!' }]}> 
+                        <Input placeholder="Enter full name" /> 
                     </Form.Item>
-                    <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email', message: 'Please enter a valid email!' }]}>
-                        <Input placeholder="Enter email" />
+                    <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email', message: 'Please enter a valid email!' }]}> 
+                        <Input placeholder="Enter email" /> 
+                    </Form.Item>
+                    <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please enter a password!' }]}> 
+                        <Input.Password placeholder="Enter password" /> 
+                    </Form.Item>
+                    <Form.Item name="role" label="Role" rules={[{ required: true, message: 'Please select a role!' }]}> 
+                        <Select placeholder="Select a role"> 
+                            {roles.map(role => <Option key={role} value={role}>{role}</Option>)} 
+                        </Select> 
                     </Form.Item>
                 </Form>
             </Modal>
