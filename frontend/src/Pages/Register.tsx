@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 
-const roles = ["Admin", "Data Analyst", "Environmental Officer", "Viewer"];
+const roles = ["Environmental Officer", "Viewer"];
 
 const Register = () => {
     const [backendStatus, setBackendStatus] = useState(null);
