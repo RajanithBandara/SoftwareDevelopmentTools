@@ -54,7 +54,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-cyan-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-sky-100 to-sky-300 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Server Status Indicator */}
         <div className="mb-6 bg-white rounded-lg shadow-md overflow-hidden">
