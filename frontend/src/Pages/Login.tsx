@@ -21,17 +21,17 @@ const Login: React.FC = () => {
         try {
             const response = await fetch("http://localhost:5000/api/users/login", {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(values)
             });
 
             const data = await response.json();
             if (response.ok) {
+                // Store token and user details in localStorage
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userRole', data.userRole);
                 localStorage.setItem('user', JSON.stringify(data.user));
+
                 message.success(`Welcome back, ${data.user.username}!`);
                 navigate('/dashboard');
             } else {
@@ -75,11 +75,10 @@ const Login: React.FC = () => {
                         textAlign: 'center',
                         background: 'rgba(255, 255, 255, 0.85)',
                         backdropFilter: 'blur(20px)',
-                        transition: 'all 0.3s ease-in-out',
-                        transform: 'translateY(0px)',
+                        transition: 'all 0.3s ease-in-out'
                     }}
                 >
-                    <Space direction="vertical" size="large" style={{ width: '100%' }}>
+                    <Space direction="vertical" size="large" style={{ width: '100%', textAlign: 'center' }}>
                         <Title level={2} style={{ margin: 0, color: '#2c3e50' }}>
                             🌍 AQI Monitor Login
                         </Title>
@@ -87,25 +86,15 @@ const Login: React.FC = () => {
                             Stay updated with real-time air quality reports
                         </Text>
                     </Space>
-
                     <Form form={form} style={{ marginTop: 24 }} onFinish={onFinish}>
                         <Form.Item
                             name="email"
-                            rules={[
-                                { required: true, message: 'Please input your email!' },
-                                { type: 'email', message: 'Please enter a valid email!' }
-                            ]}
-                        >
+                            rules={[{ required: true, message: 'Please input your email!' }, { type: 'email', message: 'Please enter a valid email!' }]}>
                             <Input prefix={<UserOutlined />} placeholder="Email Address" size="large" />
                         </Form.Item>
-
-                        <Form.Item
-                            name="password"
-                            rules={[{ required: true, message: 'Please input your password!' }]}
-                        >
+                        <Form.Item name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
                             <Input.Password prefix={<LockOutlined />} placeholder="Password" size="large" />
                         </Form.Item>
-
                         <Form.Item>
                             <Button
                                 type="primary"
@@ -119,7 +108,6 @@ const Login: React.FC = () => {
                                 Sign In
                             </Button>
                         </Form.Item>
-
                         <Form.Item style={{ textAlign: 'center', marginBottom: 0 }}>
                             <Text type="secondary" style={{ fontSize: '14px' }}>
                                 Don't have an account?{' '}
