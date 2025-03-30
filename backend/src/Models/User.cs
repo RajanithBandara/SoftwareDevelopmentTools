@@ -18,6 +18,7 @@ public class Sensor
     [Required]
     [Column(TypeName = "decimal(9,6)")]
     public decimal Longitude { get; set; }
+    public int LastAqi{ get; set; } 
 
     public bool Status { get; set; } = true; // Default active
 }

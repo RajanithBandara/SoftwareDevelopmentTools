@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createContext, useContext } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./pages/Dashboard"; // Dashboard layout with nested routes
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import HomePage from "./pages/HomePage.tsx";
+import HomePage from "./pages/HomePage";
+import AdminDashboard from "./pages/DashComponents/Admin";
+import AdminProtectedRoute from "./AdminProtectedRoute"; // Import the admin route protector
 
 // Create an authentication context to track login state
-export const AuthContext = React.createContext<{
+export const AuthContext = createContext<{
     isAuthenticated: boolean;
     setAuth: (value: boolean) => void;
 }>({
@@ -15,9 +17,9 @@ export const AuthContext = React.createContext<{
     setAuth: () => {},
 });
 
-// Protected route that redirects to login if user is not authenticated
+// Generic protected route that redirects to login if not authenticated
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { isAuthenticated } = React.useContext(AuthContext);
+    const { isAuthenticated } = useContext(AuthContext);
     return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
@@ -33,11 +35,21 @@ function App() {
         <AuthContext.Provider value={{ isAuthenticated, setAuth: setIsAuthenticated }}>
             <Router>
                 <Routes>
-                    <Route path="/" element={<HomePage />}/>
+                    <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
 
-                    {/* Nested dashboard routes under /dashboard/* */}
+                    {/* Protect the admin panel: only accessible by authenticated users with "admin" role */}
+                    <Route
+                        path="/admin"
+                        element={
+                            <AdminProtectedRoute>
+                                <AdminDashboard />
+                            </AdminProtectedRoute>
+                        }
+                    />
+
+                    {/* Protected dashboard routes for all authenticated users */}
                     <Route
                         path="/dashboard/*"
                         element={
@@ -47,8 +59,7 @@ function App() {
                         }
                     />
 
-                    {/* Default redirect based on authentication */}
-                    <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
+                    {/* Default redirect based on authentication status */}
                     <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
                 </Routes>
             </Router>
