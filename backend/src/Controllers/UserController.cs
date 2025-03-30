@@ -46,12 +46,12 @@ public class UsersController : ControllerBase
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(Register), new { id = user.Id }, new 
-        { 
-            user.Id, 
-            user.Username, 
-            user.Email, 
-            user.Role 
+        return CreatedAtAction(nameof(Register), new { id = user.Id }, new
+        {
+            user.Id,
+            user.Username,
+            user.Email,
+            user.Role
         });
     }
 
@@ -59,34 +59,35 @@ public class UsersController : ControllerBase
     /// Logs in a user and returns a JWT token along with the user role.
     /// </summary>
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginModel login)
-    {
-        if (login == null || string.IsNullOrWhiteSpace(login.Email) || string.IsNullOrWhiteSpace(login.Password))
-            return BadRequest(new { message = "Invalid login data." });
+        public async Task<IActionResult> Login([FromBody] LoginModel login)
+        {
+            if (login == null || string.IsNullOrWhiteSpace(login.Email) || string.IsNullOrWhiteSpace(login.Password))
+                return BadRequest(new { message = "Invalid login data." });
 
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == login.Email.ToLower());
-        if (user == null)
-            return Unauthorized(new { message = "Invalid email or password." });
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == login.Email.ToLower());
+            if (user == null)
+                return Unauthorized(new { message = "Invalid email or password." });
 
-        var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, login.Password);
-        if (verificationResult == PasswordVerificationResult.Failed)
-            return Unauthorized(new { message = "Invalid email or password." });
+            var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, login.Password);
+            if (verificationResult == PasswordVerificationResult.Failed)
+                return Unauthorized(new { message = "Invalid email or password." });
 
-        var token = GenerateJwtToken(user);
+            var token = GenerateJwtToken(user);
 
-        return Ok(new 
-        { 
-            token, 
-            userRole = user.Role,   // Include role for frontend use
-            user = new 
-            { 
-                user.Id, 
-                user.Username, 
-                user.Email, 
-                user.Role 
-            } 
-        });
-    }
+            return Ok(new
+            {
+                token,
+                userRole = user.Role,   // For frontend use
+                user = new
+                {
+                    user.Id,
+                    user.Username,
+                    user.Email,
+                    user.Role
+                }
+            });
+        }
+
 
     /// <summary>
     /// Retrieves the current user's data based on the JWT.
@@ -144,10 +145,10 @@ public class UsersController : ControllerBase
 // DTOs for user registration and login
 public class RegisterModel
 {
-    public string Name { get; set; }  
+    public string Name { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
-    public string Role { get; set; }  
+    public string Role { get; set; }
 }
 
 public class LoginModel
