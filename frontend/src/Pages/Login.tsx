@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Typography, message, Card, Space } from 'antd';
-import { UserOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-
-const { Title, Text } = Typography;
 
 interface LoginFormData {
     email: string;
@@ -12,33 +8,39 @@ interface LoginFormData {
 }
 
 const Login: React.FC = () => {
-    const [form] = Form.useForm();
-    const navigate = useNavigate();
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const onFinish = async (values: LoginFormData) => {
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setLoading(true);
         try {
             const response = await fetch("http://localhost:5000/api/users/login", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(values)
+                body: JSON.stringify({ email, password })
             });
-
             const data = await response.json();
             if (response.ok) {
-                // Store token and user details in localStorage
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userRole', data.userRole);
                 localStorage.setItem('user', JSON.stringify(data.user));
-
-                message.success(`Welcome back, ${data.user.username}!`);
+                alert(`Welcome back, ${data.user.username}!`);
                 navigate('/dashboard');
             } else {
-                message.error(data.message || 'Login failed');
+                // Specific error handling based on API response message
+                if (data.message?.toLowerCase().includes("not found")) {
+                    alert("User not available. Please check your email.");
+                } else if (data.message?.toLowerCase().includes("password")) {
+                    alert("Incorrect password. Please try again.");
+                } else {
+                    alert(data.message || "Login failed");
+                }
             }
         } catch (err) {
-            message.error('Network error. Please try again.');
+            alert("Network error. Please try again.");
             console.error(err);
         } finally {
             setLoading(false);
@@ -50,74 +52,60 @@ const Login: React.FC = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100vh',
-                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-                overflow: 'hidden'
-            }}
+            className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-500 to-cyan-400 overflow-hidden"
         >
             <motion.div
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
-                whileHover={{ scale: 1.005 }}
-                whileTap={{ scale: 1.006 }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-96 p-6 rounded-xl text-center bg-white/90 backdrop-blur-lg shadow-xl transition-all duration-300"
             >
-                <Card
-                    style={{
-                        width: 420,
-                        padding: 24,
-                        boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
-                        borderRadius: '12px',
-                        textAlign: 'center',
-                        background: 'rgba(255, 255, 255, 0.85)',
-                        backdropFilter: 'blur(20px)',
-                        transition: 'all 0.3s ease-in-out'
-                    }}
-                >
-                    <Space direction="vertical" size="large" style={{ width: '100%', textAlign: 'center' }}>
-                        <Title level={2} style={{ margin: 0, color: '#2c3e50' }}>
-                            🌍 AQI Monitor Login
-                        </Title>
-                        <Text type="secondary" style={{ fontSize: '16px' }}>
-                            Stay updated with real-time air quality reports
-                        </Text>
-                    </Space>
-                    <Form form={form} style={{ marginTop: 24 }} onFinish={onFinish}>
-                        <Form.Item
-                            name="email"
-                            rules={[{ required: true, message: 'Please input your email!' }, { type: 'email', message: 'Please enter a valid email!' }]}>
-                            <Input prefix={<UserOutlined />} placeholder="Email Address" size="large" />
-                        </Form.Item>
-                        <Form.Item name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
-                            <Input.Password prefix={<LockOutlined />} placeholder="Password" size="large" />
-                        </Form.Item>
-                        <Form.Item>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                loading={loading}
-                                icon={<LoginOutlined />}
-                                block
-                                size="large"
-                                style={{ borderRadius: '8px', fontSize: '16px' }}
-                            >
-                                Sign In
-                            </Button>
-                        </Form.Item>
-                        <Form.Item style={{ textAlign: 'center', marginBottom: 0 }}>
-                            <Text type="secondary" style={{ fontSize: '14px' }}>
-                                Don't have an account?{' '}
-                                <a onClick={() => navigate('/register')} style={{ color: '#1890ff', fontWeight: 'bold' }}>
-                                    Register now
-                                </a>
-                            </Text>
-                        </Form.Item>
-                    </Form>
-                </Card>
+                <div className="mb-6">
+                    <h2 className="m-0 text-2xl text-gray-800 font-bold">🌍 AQI Monitor Login</h2>
+                    <p className="text-base text-gray-600">Stay updated with real-time air quality reports</p>
+                </div>
+                <form onSubmit={onSubmit}>
+                    <div className="mb-4">
+                        <input
+                            type="email"
+                            placeholder="Email Address"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className="w-full px-4 py-3 text-lg rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className="w-full px-4 py-3 text-lg rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full py-3 text-lg font-semibold rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+                        >
+                            {loading ? 'Signing In...' : 'Sign In'}
+                        </button>
+                    </div>
+                    <div className="text-center">
+                        <p className="text-sm text-gray-600">Don't have an account?{' '}</p>
+                        <a
+                            onClick={() => navigate('/register')}
+                            className="text-blue-500 font-bold cursor-pointer"
+                        >
+                            Register now
+                        </a>
+                    </div>
+                </form>
             </motion.div>
         </motion.div>
     );
