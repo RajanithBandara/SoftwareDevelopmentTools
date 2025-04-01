@@ -82,7 +82,7 @@ const Login: React.FC = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    backgroundColor: 'rgba(14, 165, 233, 0.7)',
+                    backgroundColor: 'rgba(5, 46, 65, 0.7)',
                     backdropFilter: 'blur(4px)',
                 }}/>
             </div>
