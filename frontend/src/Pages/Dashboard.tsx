@@ -7,7 +7,6 @@ import { Button, Layout, Menu, Avatar, Tooltip, Typography, Badge } from "antd";
 import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
 import DashboardHome from "./DashComponents/Home";
 import MapView from "./DashComponents/MapView";
-import HistoricalData from "./DashComponents/HistoricData";
 import AlertsPage from "./DashComponents/Alerts";
 import SensorManagement from "./DashComponents/Settings.tsx";
 import GraphView from "./DashComponents/GraphView.tsx";

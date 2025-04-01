@@ -1,22 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { TextField, Button, Typography, Card, Box } from '@mui/material';
-
-interface LoginFormData {
-    email: string;
-    password: string;
-}
+import { TextField, Button, Typography, Card, Box, Alert } from '@mui/material';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
+        setError(null);
+
         try {
             const response = await fetch("http://localhost:5000/api/users/login", {
                 method: 'POST',
@@ -24,23 +22,17 @@ const Login: React.FC = () => {
                 body: JSON.stringify({ email, password })
             });
             const data = await response.json();
+
             if (response.ok) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userRole', data.userRole);
                 localStorage.setItem('user', JSON.stringify(data.user));
-                alert(`Welcome back, ${data.user.username}!`);
                 navigate('/dashboard');
             } else {
-                if (data.message?.toLowerCase().includes("not found")) {
-                    alert("User not available. Please check your email.");
-                } else if (data.message?.toLowerCase().includes("password")) {
-                    alert("Incorrect password. Please try again.");
-                } else {
-                    alert(data.message || "Login failed");
-                }
+                setError(data.message || "Login failed. Please try again.");
             }
         } catch (err) {
-            alert("Network error. Please try again.");
+            setError("Network error. Please check your connection.");
             console.error(err);
         } finally {
             setLoading(false);
@@ -57,47 +49,20 @@ const Login: React.FC = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: '100vh',
-                position: 'relative',
-                overflow: 'hidden',
+                background: 'linear-gradient(135deg, #87CEEB, #4682B4)',
             }}
         >
-            {/* Background Image */}
-            <div 
-                style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80')",
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                }}
-            >
-                {/* Overlay */}
-                <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(5, 46, 65, 0.7)',
-                    backdropFilter: 'blur(4px)',
-                }}/>
-            </div>
-
             <motion.div
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
-                style={{ position: 'relative', zIndex: 1 }}
             >
                 <Card sx={{ p: 4, width: 400, borderRadius: 3, textAlign: 'center', bgcolor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(10px)', boxShadow: 3 }}>
                     <Box mb={3}>
                         <Typography variant="h5" fontWeight="bold" color="primary">AQI Monitor</Typography>
                         <Typography variant="body2" color="textSecondary">Stay updated with real-time air quality reports</Typography>
                     </Box>
+                    {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
                     <form onSubmit={onSubmit}>
                         <Box mb={2}>
                             <TextField
