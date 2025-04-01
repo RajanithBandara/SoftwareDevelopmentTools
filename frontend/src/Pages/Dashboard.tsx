@@ -10,6 +10,7 @@ import MapView from "./DashComponents/MapView";
 import HistoricalData from "./DashComponents/HistoricData";
 import AlertsPage from "./DashComponents/Alerts";
 import SensorManagement from "./DashComponents/Settings.tsx";
+import GraphView from "./DashComponents/GraphView.tsx";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -326,7 +327,7 @@ const Dashboard: React.FC = () => {
                             <Route path="/" element={<DashboardHome />} />
                             <Route path="/map" element={<MapView />} />
                             <Route path="/alerts" element={<AlertsPage />} />
-                            <Route path="/history" element={<HistoricalData />} />
+                            <Route path="/history" element={<GraphView />} />
                             {(userRole === "admin" || userRole == "data analyst") && <Route path="/settings" element={<SensorManagement />} />}
                             <Route path="*" element={<Navigate to="/dashboard" replace />} />
                         </Routes>
