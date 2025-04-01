@@ -1,8 +1,12 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 
+<<<<<<< HEAD
 // Define role options
 const roles = ["Admin", "Data Analyst", "Environmental Officer", "Viewer"];
+=======
+const roles = ["Environmental Officer", "Viewer"];
+>>>>>>> 5eb8fb684fa5f47b10e70230bfc40be0fa9a50d3
 
 interface FormData {
   name: string;
