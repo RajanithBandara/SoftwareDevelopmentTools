@@ -57,15 +57,43 @@ const Login: React.FC = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: '100vh',
-                background: 'linear-gradient(135deg, #87CEEB, #4682B4)',
+                position: 'relative',
+                overflow: 'hidden',
             }}
         >
+            {/* Background Image */}
+            <div 
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80')",
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                }}
+            >
+                {/* Overlay */}
+                <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(14, 165, 233, 0.7)',
+                    backdropFilter: 'blur(4px)',
+                }}/>
+            </div>
+
             <motion.div
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
+                style={{ position: 'relative', zIndex: 1 }}
             >
-                <Card sx={{ p: 4, width: 400, borderRadius: 3, textAlign: 'center', bgcolor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(10px)', boxShadow: 3 }}>
+                <Card sx={{ p: 4, width: 400, borderRadius: 3, textAlign: 'center', bgcolor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(10px)', boxShadow: 3 }}>
                     <Box mb={3}>
                         <Typography variant="h5" fontWeight="bold" color="primary">AQI Monitor</Typography>
                         <Typography variant="body2" color="textSecondary">Stay updated with real-time air quality reports</Typography>
