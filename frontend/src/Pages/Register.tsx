@@ -2,6 +2,8 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 
 
+const roles = ["Environmental Officer", "Viewer"];
+
 
 interface FormData {
   name: string;
