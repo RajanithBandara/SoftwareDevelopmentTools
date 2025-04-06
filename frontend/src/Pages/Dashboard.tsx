@@ -10,6 +10,7 @@ import MapView from "./DashComponents/MapView";
 import AlertsPage from "./DashComponents/Alerts";
 import SensorManagement from "./DashComponents/Settings.tsx";
 import GraphView from "./DashComponents/GraphView.tsx";
+import AlertMessageSection from "./AlertMessageSection.tsx";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -321,6 +322,7 @@ const Dashboard: React.FC = () => {
                         overflowY: "auto",
                     }}
                 >
+                    <AlertMessageSection />
                     <div style={{ padding: "20px" }}>
                         <Routes>
                             <Route path="/" element={<DashboardHome />} />
