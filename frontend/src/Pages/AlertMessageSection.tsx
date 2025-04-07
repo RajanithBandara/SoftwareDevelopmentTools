@@ -139,9 +139,6 @@ function AlertMessageSection() {
                                             <p className="text-sm mt-2 text-gray-700">{alert.alertMessage}</p>
                                             <div className="flex justify-between items-center mt-3 pt-1 border-t border-gray-100">
                                                 <p className="text-xs text-gray-500">{new Date(alert.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
-                                                <button className="text-xs bg-red-50 text-red-600 hover:bg-red-100 px-2 py-1 rounded transition-colors">
-                                                    View Details
-                                                </button>
                                             </div>
                                         </motion.div>
                                     ))}
