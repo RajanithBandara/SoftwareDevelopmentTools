@@ -7,9 +7,10 @@ import { Button, Layout, Menu, Avatar, Tooltip, Typography, Badge } from "antd";
 import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
 import DashboardHome from "./DashComponents/Home";
 import MapView from "./DashComponents/MapView";
-import HistoricalData from "./DashComponents/HistoricData";
 import AlertsPage from "./DashComponents/Alerts";
 import SensorManagement from "./DashComponents/Settings.tsx";
+import GraphView from "./DashComponents/GraphView.tsx";
+import AlertMessageSection from "./AlertMessageSection.tsx";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -321,12 +322,13 @@ const Dashboard: React.FC = () => {
                         overflowY: "auto",
                     }}
                 >
+                    <AlertMessageSection />
                     <div style={{ padding: "20px" }}>
                         <Routes>
                             <Route path="/" element={<DashboardHome />} />
                             <Route path="/map" element={<MapView />} />
                             <Route path="/alerts" element={<AlertsPage />} />
-                            <Route path="/history" element={<HistoricalData />} />
+                            <Route path="/history" element={<GraphView />} />
                             {(userRole === "admin" || userRole == "data analyst") && <Route path="/settings" element={<SensorManagement />} />}
                             <Route path="*" element={<Navigate to="/dashboard" replace />} />
                         </Routes>
