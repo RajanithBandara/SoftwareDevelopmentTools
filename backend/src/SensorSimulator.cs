@@ -13,7 +13,6 @@ public class SensorSimulationService : BackgroundService
     private readonly ILogger<SensorSimulationService> _logger;
     private static readonly Random _random = new();
     private const int AQIThreshold = 150;
-    private readonly Dictionary<int, double> _sensorAqiValues = new(); // Store AQI trends per sensor
 
     public SensorSimulationService(IServiceScopeFactory scopeFactory, ILogger<SensorSimulationService> logger)
     {
@@ -39,21 +38,26 @@ public class SensorSimulationService : BackgroundService
 
                 foreach (var sensor in activeSensors)
                 {
-                    double previousAqi = _sensorAqiValues.ContainsKey(sensor.Id) ? _sensorAqiValues[sensor.Id] : _random.Next(30, 100);
+                    // Use sensor.LastAqi if it exists (non-zero), otherwise, generate a random starting value.
+                    double previousAqi = sensor.LastAqi > 0 ? sensor.LastAqi : _random.Next(30, 100);
                     double newAqi = GenerateRealisticAQI(previousAqi);
 
+                    // Create new AQI reading for the sensor.
                     var reading = new AirQualityReading
                     {
                         SensorId = sensor.Id,
                         AqiValue = (int)newAqi,
                         RecordedAt = DateTime.UtcNow
                     };
-
                     dbContext.AirQualityReadings.Add(reading);
-                    _sensorAqiValues[sensor.Id] = newAqi; // Update stored AQI value
 
-                    _logger.LogInformation($"Sensor {sensor.Id}: AQI = {(int)newAqi} recorded.");
+                    // Update the sensor's last known AQI reading.
+                    sensor.LastAqi = (int)newAqi;
+                    dbContext.Sensors.Update(sensor);
 
+                    _logger.LogInformation($"Sensor {sensor.Id}: Previous AQI = {(int)previousAqi}, New AQI = {(int)newAqi} recorded.");
+
+                    // Generate an alert if the AQI exceeds threshold.
                     if (newAqi >= AQIThreshold)
                     {
                         var alert = new Alert
@@ -77,14 +81,16 @@ public class SensorSimulationService : BackgroundService
     }
 
     /// <summary>
-    /// Generates a more realistic AQI value with gradual change and daily variation.
+    /// Generates a realistic AQI value based on the previous reading.
+    /// Incorporates a daily cycle (using a sine function), a trend factor, and small random fluctuations.
     /// </summary>
     private double GenerateRealisticAQI(double previousAqi)
     {
-        double timeFactor = Math.Sin((DateTime.UtcNow.Hour / 24.0) * (2 * Math.PI)); // Daily cycle
-        double randomFluctuation = _random.NextDouble() * 20 - 10; // Small random variation (-10 to +10)
+        double timeFactor = Math.Sin((DateTime.UtcNow.Hour / 24.0) * (2 * Math.PI)); // Daily cycle variation
+        double randomFluctuation = _random.NextDouble() * 20 - 10; // Random variation between -10 and +10
+        // Calculate new AQI influenced by previous value and daily variation
         double trendFactor = (previousAqi * 0.9) + (timeFactor * 50) + randomFluctuation;
 
-        return Math.Clamp(trendFactor, 30, 500); // Ensure AQI stays within valid range
+        return Math.Clamp(trendFactor, 30, 500); // Ensure AQI remains within valid range
     }
 }
