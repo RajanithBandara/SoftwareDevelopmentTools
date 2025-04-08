@@ -395,7 +395,7 @@ const DashboardHome = () => {
                             <span>Sensor Readings</span>
                         </div>
                     }
-                    className="rounded-xl shadow-lg"
+                    className="rounded-xl shadow-lg h-[45vh] overflow-auto"
                 >
                     {loading ? (
                         <div className="h-64 flex items-center justify-center">
@@ -413,7 +413,7 @@ const DashboardHome = () => {
                             <span>System Health Details</span>
                         </div>
                     }
-                    className="rounded-xl shadow-lg"
+                    className="rounded-xl shadow-lg h-[45vh] overflow-auto"
                 >
                     {loading ? (
                         <div className="h-64 flex items-center justify-center">
