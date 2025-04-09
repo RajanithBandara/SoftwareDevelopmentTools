@@ -398,7 +398,7 @@ const DashboardHome = () => {
                     className="rounded-xl shadow-lg h-[45vh] overflow-auto"
                 >
                     {loading ? (
-                        <div className="h-64 flex items-center justify-center">
+                        <div className="h-54 flex items-center justify-center">
                             <Spin size="large" />
                         </div>
                     ) : (
@@ -416,12 +416,12 @@ const DashboardHome = () => {
                     className="rounded-xl shadow-lg h-[45vh] overflow-auto"
                 >
                     {loading ? (
-                        <div className="h-64 flex items-center justify-center">
+                        <div className="h-54 flex items-center justify-center">
                             <Spin size="large" />
                         </div>
                     ) : (
                         <motion.div
-                            className="h-64 flex flex-col items-center justify-center"
+                            className="h-54 flex flex-col items-center justify-center"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.5 }}

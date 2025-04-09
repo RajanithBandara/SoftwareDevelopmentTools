@@ -36,6 +36,10 @@ public class SensorsController : ControllerBase
             })
             .ToListAsync();
 
+            if (!sensorData.Any()){
+            return NotFound(new { message = "No sensors found."
+            });
+
         return Ok(sensorData);
     }
     [HttpGet("latest-readings")]
