@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using StudentApp.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using StudentApp.Models;
+
 
 namespace StudentApp.Controllers
 {

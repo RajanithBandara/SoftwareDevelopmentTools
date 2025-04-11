@@ -2,96 +2,88 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-public class Sensor
+namespace StudentApp.Models
 {
-    [Key]
-    public int Id { get; set; }
-
-    [Required]
-    [MaxLength(255)] // Limit location string length
-    public string Location { get; set; } = string.Empty;
-
-    [Required]
-    [Column(TypeName = "decimal(9,6)")] // Ensure precision for coordinates
-    public decimal Latitude { get; set; }
-
-    [Required]
-    [Column(TypeName = "decimal(9,6)")]
-    public decimal Longitude { get; set; }
-    public int LastAqi{ get; set; } 
-
-    public bool Status { get; set; } = true; // Default active
-}
-
-public class Alert
-{
-    [Key]
-    public int Id { get; set; }
-
-    [Required]
-    public int SensorId { get; set; }
-
-    [ForeignKey(nameof(SensorId))]
-    public Sensor? Sensor { get; set; } // Nullable to prevent query issues
-
-    [Required]
-    [Range(0, 500)] // Ensure AQI level is within standard range
-    public int AQILevel { get; set; }
-
-    [Required]
-    [MaxLength(500)] // Limit message length
-    public string AlertMessage { get; set; } = string.Empty;
-
-    public DateTime CreatedAt { get; set; }
-
-    public Alert()
+    public class Sensor
     {
-        CreatedAt = DateTime.UtcNow;
+        [Key] public int Id { get; set; }
+
+        [Required]
+        [MaxLength(255)] // Limit location string length
+        public string Location { get; set; } = string.Empty;
+
+        [Required]
+        [Column(TypeName = "decimal(9,6)")] // Ensure precision for coordinates
+        public decimal Latitude { get; set; }
+
+        [Required]
+        [Column(TypeName = "decimal(9,6)")]
+        public decimal Longitude { get; set; }
+
+        public int LastAqi { get; set; }
+
+        public bool Status { get; set; } = true; // Default active
     }
-}
 
-public class AirQualityReading
-{
-    [Key]
-    public int Id { get; set; }
-
-    [Required]
-    public int SensorId { get; set; }
-
-    [ForeignKey(nameof(SensorId))]
-    public Sensor? Sensor { get; set; }
-
-    [Required]
-    [Range(0, 500)] // Ensure AQI value is within range
-    public int AqiValue { get; set; }
-
-    public DateTime RecordedAt { get; set; }
-
-    public AirQualityReading()
+    public class Alert
     {
-        RecordedAt = DateTime.UtcNow;
+        [Key] public int Id { get; set; }
+
+        [Required] public int SensorId { get; set; }
+
+        [ForeignKey(nameof(SensorId))] public Sensor? Sensor { get; set; } // Nullable to prevent query issues
+
+        [Required]
+        [Range(0, 500)] // Ensure AQI level is within standard range
+        public int AQILevel { get; set; }
+
+        [Required]
+        [MaxLength(500)] // Limit message length
+        public string AlertMessage { get; set; } = string.Empty;
+
+        public DateTime CreatedAt { get; set; }
+
+        public Alert()
+        {
+            CreatedAt = DateTime.UtcNow;
+        }
     }
-}
 
-public class User
-{
-    [Key]
-    public int Id { get; set; }
+    public class AirQualityReading
+    {
+        [Key] public int Id { get; set; }
 
-    [Required]
-    [MaxLength(50)]
-    public string Username { get; set; } = string.Empty;
+        [Required] public int SensorId { get; set; }
 
-    [Required]
-    [EmailAddress]
-    [MaxLength(255)]
-    public string Email { get; set; } = string.Empty;
+        [ForeignKey(nameof(SensorId))] public Sensor? Sensor { get; set; }
 
-    [Required]
-    [MinLength(8)] // Ensure minimum security requirements
-    public string PasswordHash { get; set; } = string.Empty;
+        [Required]
+        [Range(0, 500)] // Ensure AQI value is within range
+        public int AqiValue { get; set; }
 
-    [Required]
-    [MaxLength(20)]
-    public string Role { get; set; } = "User"; // Default role
+        public DateTime RecordedAt { get; set; }
+
+        public AirQualityReading()
+        {
+            RecordedAt = DateTime.UtcNow;
+        }
+    }
+
+    public class User
+    {
+        [Key] public int Id { get; set; }
+
+        [Required] [MaxLength(50)] public string Username { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        [MaxLength(255)]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [MinLength(8)] // Ensure minimum security requirements
+        public string PasswordHash { get; set; } = string.Empty;
+
+        [Required] [MaxLength(20)] public string Role { get; set; } = "User"; // Default role
+    }
 }

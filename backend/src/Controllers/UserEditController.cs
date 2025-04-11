@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using StudentApp.Data;
+using StudentApp.Models;
 
 namespace StudentApp.Controllers
 {

@@ -6,6 +6,7 @@ using StudentApp.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using StudentApp.Models;
 
 [Route("api/users")]
 [ApiController]

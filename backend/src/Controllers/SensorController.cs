@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudentApp.Data;
+using StudentApp.Models;
+
 
 
 namespace StudentApp.Controllers;
