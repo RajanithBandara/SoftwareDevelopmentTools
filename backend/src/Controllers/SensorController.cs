@@ -19,15 +19,15 @@ public class SensorsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetSensors()
     {
-        // Query each sensor and join the latest AQI reading (if any)
         var sensorData = await _context.Sensors
-            .Select(sensor => new 
+            .Where(sensor => sensor.Status) // Only include sensors that are on
+            .Select(sensor => new
             {
                 sensor.Id,
                 sensor.Location,
                 sensor.Latitude,
                 sensor.Longitude,
-                // Retrieves the most recent AQI reading for the sensor.
+                sensor.Status,
                 aqiValue = _context.AirQualityReadings
                     .Where(r => r.SensorId == sensor.Id)
                     .OrderByDescending(r => r.RecordedAt)
