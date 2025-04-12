@@ -32,7 +32,8 @@ namespace StudentApp.Controllers
                 .Select(a => new
                 {
                     sensorId = a.SensorId,
-                    AQIlevel = a.AQILevel
+                    AQIValue = a.AqiValue,
+                    AQILevel = a.AqiLevel,
                 })
                 .ToListAsync();
 

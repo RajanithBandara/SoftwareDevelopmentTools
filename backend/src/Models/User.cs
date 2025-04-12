@@ -35,11 +35,13 @@ namespace StudentApp.Models
 
         [Required]
         [Range(0, 500)] // Ensure AQI level is within standard range
-        public int AQILevel { get; set; }
+        public int AqiValue { get; set; }
 
         [Required]
         [MaxLength(500)] // Limit message length
         public string AlertMessage { get; set; } = string.Empty;
+        
+        public string AqiLevel { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
 
@@ -51,23 +53,25 @@ namespace StudentApp.Models
 
     public class AirQualityReading
     {
-        [Key] public int Id { get; set; }
-
-        [Required] public int SensorId { get; set; }
-
-        [ForeignKey(nameof(SensorId))] public Sensor? Sensor { get; set; }
+        [Key]
+        public int Id { get; set; }
 
         [Required]
-        [Range(0, 500)] // Ensure AQI value is within range
+        public int SensorId { get; set; }
+
+        [ForeignKey(nameof(SensorId))]
+        public Sensor? Sensor { get; set; }
+
+        [Required]
+        [Range(0, 500, ErrorMessage = "AQI must be between 0 and 500.")]
         public int AqiValue { get; set; }
 
-        public DateTime RecordedAt { get; set; }
+        public string AQILevel { get; set; } = string.Empty;
 
-        public AirQualityReading()
-        {
-            RecordedAt = DateTime.UtcNow;
-        }
+        [Required]
+        public DateTime RecordedAt { get; set; } = DateTime.UtcNow;
     }
+
 
     public class User
     {

@@ -42,7 +42,8 @@ namespace StudentApp.Controllers
                         id = a.Id,
                         sensorId = a.SensorId,
                         location = a.Sensor != null ? a.Sensor.Location : "Unknown", // Handle null sensor
-                        AQIlevel = a.AQILevel.ToString(), // Convert to string
+                        AQIValue = a.AqiValue.ToString(), // Convert to string
+                        AQILevel = a.AqiLevel,
                         alertMessage = a.AlertMessage,
                         createdAt = a.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss") // Format date
                     })
