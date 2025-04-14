@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudentApp.Data;
 using System.Threading.Tasks;
+using StudentApp.Models;
 
 namespace NetBackend.Controllers;
 

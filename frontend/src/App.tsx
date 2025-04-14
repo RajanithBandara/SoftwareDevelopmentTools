@@ -6,7 +6,8 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import HomePage from "./pages/HomePage";
 import AdminDashboard from "./pages/DashComponents/Admin";
-import AdminProtectedRoute from "./AdminProtectedRoute"; // Import the admin route protector
+import AdminProtectedRoute from "./AdminProtectedRoute";
+import AllDataPage from "./Pages/AllData.tsx"; // Import the admin route protector
 
 // Create an authentication context to track login state
 export const AuthContext = createContext<{
@@ -55,6 +56,14 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <Dashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/FullHistory"
+                        element={
+                            <ProtectedRoute>
+                                <AllDataPage />
                             </ProtectedRoute>
                         }
                     />

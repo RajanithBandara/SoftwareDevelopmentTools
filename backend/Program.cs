@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using StudentApp.Data;
 using Microsoft.AspNetCore.Identity;
+using StudentApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;

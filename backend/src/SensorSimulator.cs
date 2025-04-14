@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StudentApp.Data;
+using StudentApp.Models;
 
 public class SensorSimulationService : BackgroundService
 {
@@ -38,7 +39,7 @@ public class SensorSimulationService : BackgroundService
 
                 foreach (var sensor in activeSensors)
                 {
-                    // Use sensor.LastAqi if it exists (non-zero), otherwise, generate a random starting value.
+                    // Use sensor.LastAqi if it exists (non-zero), otherwise generate a random starting value.
                     double previousAqi = sensor.LastAqi > 0 ? sensor.LastAqi : _random.Next(30, 100);
                     double newAqi = GenerateRealisticAQI(previousAqi);
 
@@ -47,7 +48,12 @@ public class SensorSimulationService : BackgroundService
                     {
                         SensorId = sensor.Id,
                         AqiValue = (int)newAqi,
-                        RecordedAt = DateTime.UtcNow
+                        RecordedAt = DateTime.UtcNow,
+                        AQILevel = newAqi < 50 ? "Good" :
+                            newAqi < 100 && newAqi >= 50 ? "Moderate" :
+                            newAqi < 150 && newAqi >= 100 ? "Unhealthy for Sensitive Groups" :
+                            newAqi < 200 && newAqi >= 150 ? "Unhealthy" :
+                            newAqi < 300 && newAqi >= 200 ? "Very Unhealthy" : "Hazardous",
                     };
                     dbContext.AirQualityReadings.Add(reading);
 
@@ -63,8 +69,13 @@ public class SensorSimulationService : BackgroundService
                         var alert = new Alert
                         {
                             SensorId = sensor.Id,
-                            AQILevel = (int)newAqi,
+                            AqiValue = (int)newAqi,
                             AlertMessage = $"Sensor {sensor.Id} has a high AQI reading of {(int)newAqi}.",
+                            AqiLevel = newAqi < 50 ? "Good" :
+                                       newAqi < 100 && newAqi >= 50 ? "Moderate" :
+                                       newAqi < 150 && newAqi >= 100 ? "Unhealthy for Sensitive Groups" :
+                                       newAqi < 200 && newAqi >= 150 ? "Unhealthy" :
+                                       newAqi < 300 && newAqi >= 200 ? "Very Unhealthy" : "Hazardous",
                             CreatedAt = DateTime.UtcNow
                         };
 
@@ -76,21 +87,36 @@ public class SensorSimulationService : BackgroundService
                 await dbContext.SaveChangesAsync(stoppingToken);
             }
 
+            // Simulate a realistic delay between readings (e.g., 30 minutes)
             await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
         }
     }
 
     /// <summary>
     /// Generates a realistic AQI value based on the previous reading.
-    /// Incorporates a daily cycle (using a sine function), a trend factor, and small random fluctuations.
+    /// Incorporates the daily cycle, rush hour effects, and random fluctuations.
     /// </summary>
     private double GenerateRealisticAQI(double previousAqi)
     {
-        double timeFactor = Math.Sin((DateTime.UtcNow.Hour / 24.0) * (2 * Math.PI)); // Daily cycle variation
-        double randomFluctuation = _random.NextDouble() * 20 - 10; // Random variation between -10 and +10
-        // Calculate new AQI influenced by previous value and daily variation
-        double trendFactor = (previousAqi * 0.9) + (timeFactor * 50) + randomFluctuation;
+        // Calculate time as hours with fractional minutes for a smoother cycle.
+        double currentTime = DateTime.UtcNow.Hour + DateTime.UtcNow.Minute / 60.0;
+        // Daily cycle: oscillates between -1 and 1.
+        double dailyCycle = Math.Sin((currentTime / 24.0) * 2 * Math.PI);
 
-        return Math.Clamp(trendFactor, 30, 500); // Ensure AQI remains within valid range
+        // Rush hour factor: Add a positive boost during typical morning and evening rush hours.
+        double rushHourBoost = 0;
+        if (currentTime >= 7 && currentTime < 9)  // Morning rush hour
+            rushHourBoost = 15;
+        else if (currentTime >= 17 && currentTime < 19)  // Evening rush hour
+            rushHourBoost = 15;
+
+        // Reduced random fluctuation for smoother change.
+        double randomFluctuation = _random.NextDouble() * 15 - 7.5; // range: -7.5 to +7.5
+
+        // Calculate new AQI influenced by the previous value, daily cycle, rush hour boost, and random noise.
+        double trendFactor = previousAqi * 0.85 + (dailyCycle * 50) + rushHourBoost + randomFluctuation;
+
+        // Clamp the AQI value to a realistic range.
+        return Math.Clamp(trendFactor, 30, 500);
     }
 }
