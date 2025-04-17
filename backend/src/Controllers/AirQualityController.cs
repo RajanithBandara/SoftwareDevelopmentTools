@@ -28,7 +28,8 @@ public class AirQualityController : ControllerBase
                 r.Id,
                 r.SensorId,
                 aqiValue = r.AqiValue,
-                r.RecordedAt
+                r.RecordedAt,
+                location = r.Sensor.Location,
             })
             .ToListAsync();
 

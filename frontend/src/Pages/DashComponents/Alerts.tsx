@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     AlertOutlined,
     ClockCircleOutlined,
@@ -89,12 +89,10 @@ const AlertsPage: React.FC = () => {
         try {
             setIsLoading(true);
             const response = await fetch('http://localhost:5000/api/alerts');
-
             if (!response.ok) {
                 throw new Error('Failed to fetch alerts');
             }
-
-            const data = await response.json();
+            const data: AirQualityAlert[] = await response.json();
             setAlerts(data);
             setLastRefreshed(new Date());
             setError(null);
@@ -155,12 +153,13 @@ const AlertsPage: React.FC = () => {
         a.aqiLevel === 'Hazardous'
     ).length;
 
+    // Visual improvements: introduce a subtle background gradient and adjust spacing
     return (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}
+            style={{ padding: '20px', borderRadius: 18, boxShadow: 'initial', maxWidth: '1200px', margin: '0 auto', background: 'linear-gradient(135deg, #f9f9f9, #e0e0e0)' }}
         >
             <Row gutter={[16, 16]} align="middle" justify="space-between">
                 <Col>
@@ -188,39 +187,37 @@ const AlertsPage: React.FC = () => {
                 </Col>
             </Row>
 
-            {!isLoading && !error && (
-                <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
-                    <Col xs={24} sm={8}>
-                        <Card bordered={false}>
-                            <Statistic
-                                title="Total Alerts"
-                                value={alerts.length}
-                                prefix={<AlertOutlined />}
-                            />
-                        </Card>
-                    </Col>
-                    <Col xs={24} sm={8}>
-                        <Card bordered={false}>
-                            <Statistic
-                                title="Critical Alerts"
-                                value={criticalAlerts}
-                                valueStyle={{ color: criticalAlerts > 0 ? '#cf1322' : undefined }}
-                                prefix={<AlertOutlined />}
-                            />
-                        </Card>
-                    </Col>
-                    <Col xs={24} sm={8}>
-                        <Card bordered={false}>
-                            <Statistic
-                                title="Highest AQI"
-                                value={highestAQI}
-                                valueStyle={{ color: highestAQI > 150 ? '#cf1322' : highestAQI > 100 ? '#faad14' : '#3f8600' }}
-                                prefix={<InfoCircleOutlined />}
-                            />
-                        </Card>
-                    </Col>
-                </Row>
-            )}
+            <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+                <Col xs={24} sm={8}>
+                    <Card bordered={false}>
+                        <Statistic
+                            title="Total Alerts"
+                            value={alerts.length}
+                            prefix={<AlertOutlined />}
+                        />
+                    </Card>
+                </Col>
+                <Col xs={24} sm={8}>
+                    <Card bordered={false}>
+                        <Statistic
+                            title="Critical Alerts"
+                            value={criticalAlerts}
+                            valueStyle={{ color: criticalAlerts > 0 ? '#cf1322' : undefined }}
+                            prefix={<AlertOutlined />}
+                        />
+                    </Card>
+                </Col>
+                <Col xs={24} sm={8}>
+                    <Card bordered={false}>
+                        <Statistic
+                            title="Highest AQI"
+                            value={highestAQI}
+                            valueStyle={{ color: highestAQI > 150 ? '#cf1322' : highestAQI > 100 ? '#fa8c16' : '#3f8600' }}
+                            prefix={<InfoCircleOutlined />}
+                        />
+                    </Card>
+                </Col>
+            </Row>
 
             <Card style={{ marginTop: 16 }}>
                 <Space wrap style={{ marginBottom: 16 }}>
@@ -332,11 +329,12 @@ const AlertsPage: React.FC = () => {
                                             hoverable
                                             style={{
                                                 boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                                                borderRadius: '8px',
+                                                borderRadius: '12px',
                                                 height: '100%',
+                                                transition: 'transform 0.3s',
                                             }}
                                             actions={[
-                                                <Tooltip title="View sensor details">
+                                                <Tooltip title="View sensor details" key="details">
                                                     <Button type="text" icon={<InfoCircleOutlined />}>Sensor #{alert.sensorId}</Button>
                                                 </Tooltip>
                                             ]}
