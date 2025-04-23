@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { MinusOutlined, PlusOutlined, BellOutlined, WarningOutlined } from "@ant-design/icons";
+import {
+    Paper,
+    Typography,
+    IconButton,
+    Box,
+    Divider,
+    Badge,
+    Stack,
+} from "@mui/material";
+import { Warning, Notifications, Add, Remove } from "@mui/icons-material";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Alert {
@@ -23,7 +32,6 @@ function AlertMessageSection() {
                 const response = await axios.get("http://localhost:5000/api/alerts");
                 const newData = response.data.slice(0, 3);
 
-                // Detect new alert
                 if (alerts.length > 0 && newData.length > 0 && newData[0].id !== alerts[0].id) {
                     setNewAlert(true);
                     if (minimized) {
@@ -51,123 +59,141 @@ function AlertMessageSection() {
     const toggleMinimize = () => setMinimized(!minimized);
 
     const getSeverityColor = (aqi: number) => {
-        if (aqi > 300) return "bg-red-50 border-red-300";
-        if (aqi > 200) return "bg-red-50 border-red-200";
-        if (aqi > 100) return "bg-orange-50 border-orange-200";
-        return "bg-yellow-50 border-yellow-200";
+        if (aqi > 300) return "#ffebee"; // light red
+        if (aqi > 200 && aqi <=300) return "#ffcdd2"; // lighter red
+        if (aqi > 100 && aqi <=200) return "#ffe0b2"; // orange
+        return "#fff9c4"; // yellow
     };
 
-    const getSeverityBadge = (aqi: number) => {
-        if (aqi > 300) return "bg-red-600 text-white";
-        if (aqi > 200) return "bg-red-500 text-white";
-        if (aqi > 100) return "bg-orange-500 text-white";
-        return "bg-yellow-500 text-white";
+    const getSeverityBadgeColor = (aqi: number) => {
+        if (aqi > 300) return "error";
+        if (aqi > 200 && aqi <=300) return "error";
+        if (aqi > 100 && aqi <=200) return "warning";
+        return "info";
     };
 
     return (
         <motion.div
-            className="fixed bottom-5 right-5 z-50 rounded-xl overflow-hidden shadow-2xl"
+            className="fixed bottom-5 right-5 z-50"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
         >
             <motion.div
-                className="bg-white border border-gray-200 w-80 rounded-xl overflow-hidden"
-                animate={{ height: minimized ? "44px" : "auto" }}
+                animate={{ height: minimized ? 56 : "auto" }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-                {/* Header */}
-                <div
-                    className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white cursor-pointer"
-                    onClick={toggleMinimize}
-                >
-                    <div className="flex items-center gap-2">
-                        <div className="relative">
-                            <WarningOutlined className="text-lg" />
-                            <AnimatePresence>
-                                {newAlert && minimized && (
-                                    <motion.div
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        exit={{ scale: 0 }}
-                                        className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-yellow-300 rounded-full"
-                                    />
-                                )}
-                            </AnimatePresence>
-                        </div>
-                        <h3 className="text-sm font-medium">Air Quality Alerts</h3>
-                    </div>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            toggleMinimize();
+                <Paper elevation={6} sx={{ width: 320, borderRadius: 2, overflow: "hidden" }}>
+                    {/* Header */}
+                    <Box
+                        onClick={toggleMinimize}
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            px: 2,
+                            py: 1.5,
+                            bgcolor: "error.main",
+                            color: "white",
+                            cursor: "pointer",
                         }}
-                        className="hover:bg-white/10 p-1 rounded"
-                        aria-label={minimized ? "Expand" : "Minimize"}
                     >
-                        {minimized ? <PlusOutlined /> : <MinusOutlined />}
-                    </button>
-                </div>
-
-                {/* Content */}
-                <AnimatePresence>
-                    {!minimized && (
-                        <motion.div
-                            className="p-3"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
+                        <Stack direction="row" spacing={1} alignItems="center">
+                            <Badge
+                                color="warning"
+                                variant="dot"
+                                invisible={!newAlert || !minimized}
+                                overlap="circular"
+                            >
+                                <Warning />
+                            </Badge>
+                            <Typography variant="subtitle2" fontWeight={500}>
+                                Air Quality Alerts
+                            </Typography>
+                        </Stack>
+                        <IconButton
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                toggleMinimize();
+                            }}
+                            sx={{ color: "white" }}
+                            aria-label={minimized ? "Expand" : "Minimize"}
                         >
-                            {alerts.length > 0 ? (
-                                <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
-                                    {alerts.map((alert) => (
-                                        <motion.div
-                                            key={alert.id}
-                                            initial={{ x: 20, opacity: 0 }}
-                                            animate={{ x: 0, opacity: 1 }}
-                                            className={`p-3 border rounded-lg ${getSeverityColor(alert.AQIlevel)}`}
-                                        >
-                                            <div className="flex justify-between items-center mb-1">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="w-2 h-2 rounded-full bg-red-500" />
-                                                    <span className="text-sm font-semibold text-gray-800">
-                            Sensor {alert.sensorId}
-                          </span>
-                                                </div>
-                                                <span
-                                                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${getSeverityBadge(
-                                                        alert.AQIlevel
-                                                    )}`}
+                            {minimized ? <Add /> : <Remove />}
+                        </IconButton>
+                    </Box>
+
+                    {/* Content */}
+                    <AnimatePresence>
+                        {!minimized && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                <Box p={2} maxHeight={300} overflow="auto">
+                                    {alerts.length > 0 ? (
+                                        <Stack spacing={2}>
+                                            {alerts.map((alert) => (
+                                                <Paper
+                                                    key={alert.id}
+                                                    variant="outlined"
+                                                    sx={{
+                                                        p: 2,
+                                                        backgroundColor: getSeverityColor(alert.AQIlevel),
+                                                        borderLeft: `4px solid`,
+                                                        borderColor: (theme) =>
+                                                            theme.palette[getSeverityBadgeColor(alert.AQIlevel)].main,
+                                                    }}
                                                 >
-                          AQI {alert.AQIlevel}
-                        </span>
-                                            </div>
-                                            <p className="text-xs text-gray-500">{alert.location}</p>
-                                            <p className="text-sm mt-1 text-gray-700">{alert.alertMessage}</p>
-                                            <div className="text-xs text-gray-400 mt-2 border-t pt-1">
-                                                {new Date(alert.createdAt).toLocaleTimeString([], {
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                })}
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="flex flex-col items-center justify-center py-6 text-center">
-                                    <div className="bg-red-100 p-3 rounded-full mb-2">
-                                        <BellOutlined className="text-xl text-red-400" />
-                                    </div>
-                                    <p className="text-sm font-medium text-gray-700">No active alerts</p>
-                                    <p className="text-xs text-gray-400">
-                                        Air quality is within normal parameters
-                                    </p>
-                                </div>
-                            )}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                                        <Typography variant="body2" fontWeight="bold">
+                                                            Sensor {alert.sensorId}
+                                                        </Typography>
+                                                        <Box
+                                                            px={1}
+                                                            py={0.5}
+                                                            borderRadius={1}
+                                                            bgcolor={`${getSeverityBadgeColor(alert.AQIlevel)}.main`}
+                                                            color="white"
+                                                            fontSize="12px"
+                                                            fontWeight={600}
+                                                        >
+                                                            AQI {alert.AQIlevel}
+                                                        </Box>
+                                                    </Stack>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        {alert.location}
+                                                    </Typography>
+                                                    <Typography variant="body2" mt={1}>
+                                                        {alert.alertMessage}
+                                                    </Typography>
+                                                    <Divider sx={{ my: 1 }} />
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        {new Date(alert.createdAt).toLocaleTimeString([], {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                        })}
+                                                    </Typography>
+                                                </Paper>
+                                            ))}
+                                        </Stack>
+                                    ) : (
+                                        <Box display="flex" flexDirection="column" alignItems="center" py={4}>
+                                            <Notifications sx={{ fontSize: 36, color: "error.light", mb: 1 }} />
+                                            <Typography variant="subtitle2">No active alerts</Typography>
+                                            <Typography variant="caption" color="text.secondary">
+                                                Air quality is within normal parameters
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                </Box>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </Paper>
             </motion.div>
         </motion.div>
     );
