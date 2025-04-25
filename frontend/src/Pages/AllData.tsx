@@ -100,8 +100,8 @@ const AllDataPage: React.FC = () => {
         applyFilters(data, searchText, timeRange);
     }, [searchText, timeRange]);
 
-    // Color palette - vibrant purple theme with high contrast
-    const purpleTheme = {
+    // Theme palettes for dark and light modes
+    const darkTheme = {
         bgPrimary: 'rgba(23, 15, 30, 0.95)',
         bgSecondary: 'rgba(40, 30, 60, 0.85)',
         bgTertiary: 'rgba(60, 45, 80, 0.75)',
@@ -124,13 +124,39 @@ const AllDataPage: React.FC = () => {
         highlightGlow: '0 0 8px rgba(224, 170, 255, 0.5)',
     };
 
+    const lightTheme = {
+        bgPrimary: 'rgba(250, 250, 255, 0.95)',
+        bgSecondary: 'rgba(242, 240, 250, 0.85)',
+        bgTertiary: 'rgba(235, 232, 245, 0.75)',
+        accentPrimary: '#7B2CBF',
+        accentSecondary: '#9D4EDD',
+        accentTertiary: '#C77DFF',
+        textPrimary: '#1F1135',
+        textSecondary: '#4A2B81',
+        textDim: 'rgba(31, 17, 53, 0.6)',
+        goodGreen: '#18A999',
+        moderateYellow: '#D6A92B',
+        unhealthyOrange: '#E67E00',
+        unhealthyRed: '#DE3D73',
+        veryUnhealthyPurple: '#9900CC',
+        hazardousRed: '#D50046',
+        border: 'rgba(123, 44, 191, 0.15)',
+        success: '#18A999',
+        error: '#DE3D73',
+        cardGlow: '0 0 15px rgba(123, 44, 191, 0.1)',
+        highlightGlow: '0 0 8px rgba(123, 44, 191, 0.25)',
+    };
+
+    // Select the current theme based on darkMode state
+    const currentTheme = darkMode ? darkTheme : lightTheme;
+
     const getAQIColor = (value: number): string => {
-        if (value <= 50) return purpleTheme.goodGreen;
-        if (value <= 100) return purpleTheme.moderateYellow;
-        if (value <= 150) return purpleTheme.unhealthyOrange;
-        if (value <= 200) return purpleTheme.unhealthyRed;
-        if (value <= 300) return purpleTheme.veryUnhealthyPurple;
-        return purpleTheme.hazardousRed;
+        if (value <= 50) return currentTheme.goodGreen;
+        if (value <= 100) return currentTheme.moderateYellow;
+        if (value <= 150) return currentTheme.unhealthyOrange;
+        if (value <= 200) return currentTheme.unhealthyRed;
+        if (value <= 300) return currentTheme.veryUnhealthyPurple;
+        return currentTheme.hazardousRed;
     };
 
     const getAQIText = (value: number) => {
@@ -164,39 +190,41 @@ const AllDataPage: React.FC = () => {
 
     const paginatedData = filteredData.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
-    // Glassy UI styles
-    const glassyStyles = {
+    // Theme-aware UI styles
+    const getThemeStyles = () => ({
         container: {
             p: 4,
             m: 2,
             borderRadius: '24px',
-            backgroundColor: purpleTheme.bgPrimary,
+            backgroundColor: currentTheme.bgPrimary,
             backdropFilter: 'blur(10px)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
-            border: `1px solid ${purpleTheme.border}`,
-            color: purpleTheme.textPrimary
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            border: `1px solid ${currentTheme.border}`,
+            color: currentTheme.textPrimary,
+            transition: 'all 0.5s ease'
         },
         card: {
             borderRadius: '18px',
             backdropFilter: 'blur(8px)',
-            backgroundColor: purpleTheme.bgSecondary,
-            boxShadow: purpleTheme.cardGlow,
-            border: `1px solid ${purpleTheme.border}`,
+            backgroundColor: currentTheme.bgSecondary,
+            boxShadow: currentTheme.cardGlow,
+            border: `1px solid ${currentTheme.border}`,
             overflow: 'hidden',
             transition: 'all 0.3s ease',
             '&:hover': {
-                boxShadow: purpleTheme.highlightGlow,
+                boxShadow: currentTheme.highlightGlow,
                 transform: animationsEnabled ? 'translateY(-5px)' : 'none'
             }
         },
         searchBar: {
             borderRadius: '50px',
-            backgroundColor: purpleTheme.bgSecondary,
+            backgroundColor: currentTheme.bgSecondary,
             p: '8px 16px',
             display: 'flex',
             alignItems: 'center',
-            border: `1px solid ${purpleTheme.border}`,
-            backdropFilter: 'blur(8px)'
+            border: `1px solid ${currentTheme.border}`,
+            backdropFilter: 'blur(8px)',
+            transition: 'all 0.3s ease'
         },
         button: (variant: 'primary' | 'secondary' = 'primary') => ({
             borderRadius: '50px',
@@ -204,25 +232,26 @@ const AllDataPage: React.FC = () => {
             py: 1,
             px: 3,
             fontWeight: 600,
-            backgroundColor: variant === 'primary' ? purpleTheme.accentPrimary : 'transparent',
-            color: variant === 'primary' ? '#FFFFFF' : purpleTheme.accentPrimary,
-            border: variant === 'primary' ? 'none' : `1px solid ${purpleTheme.accentPrimary}`,
-            boxShadow: variant === 'primary' ? purpleTheme.cardGlow : 'none',
+            backgroundColor: variant === 'primary' ? currentTheme.accentPrimary : 'transparent',
+            color: variant === 'primary' ? '#FFFFFF' : currentTheme.accentPrimary,
+            border: variant === 'primary' ? 'none' : `1px solid ${currentTheme.accentPrimary}`,
+            boxShadow: variant === 'primary' ? currentTheme.cardGlow : 'none',
             transition: 'all 0.3s ease',
             backdropFilter: variant === 'secondary' ? 'blur(8px)' : 'none',
             '&:hover': {
-                backgroundColor: variant === 'primary' ? purpleTheme.accentSecondary : 'rgba(157, 78, 221, 0.1)',
+                backgroundColor: variant === 'primary' ? currentTheme.accentSecondary : `${currentTheme.accentPrimary}15`,
                 transform: animationsEnabled ? 'scale(1.02)' : 'none'
             }
         }),
         titleText: {
             fontWeight: 700,
             letterSpacing: '-0.5px',
-            background: `linear-gradient(45deg, ${purpleTheme.accentSecondary}, ${purpleTheme.accentTertiary})`,
+            background: `linear-gradient(45deg, ${currentTheme.accentPrimary}, ${currentTheme.accentSecondary})`,
             backgroundClip: 'text',
             textFillColor: 'transparent',
             WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
+            WebkitTextFillColor: 'transparent',
+            transition: 'all 0.5s ease'
         },
         metricCard: {
             borderRadius: '18px',
@@ -232,11 +261,12 @@ const AllDataPage: React.FC = () => {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: purpleTheme.bgSecondary,
+            backgroundColor: currentTheme.bgSecondary,
             backdropFilter: 'blur(8px)',
-            border: `1px solid ${purpleTheme.border}`,
+            border: `1px solid ${currentTheme.border}`,
             position: 'relative',
             overflow: 'hidden',
+            transition: 'all 0.5s ease',
             '&::before': {
                 content: '""',
                 position: 'absolute',
@@ -244,7 +274,7 @@ const AllDataPage: React.FC = () => {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                background: 'radial-gradient(circle at center, rgba(224, 170, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%)',
+                background: `radial-gradient(circle at center, ${currentTheme.accentSecondary}15 0%, rgba(0, 0, 0, 0) 70%)`,
                 zIndex: 0
             }
         },
@@ -254,52 +284,57 @@ const AllDataPage: React.FC = () => {
             mt: 1,
             position: 'relative',
             zIndex: 1,
-            color: purpleTheme.textPrimary
+            color: currentTheme.textPrimary,
+            transition: 'all 0.3s ease'
         },
         metricLabel: {
-            color: purpleTheme.textDim,
+            color: currentTheme.textDim,
             position: 'relative',
-            zIndex: 1
+            zIndex: 1,
+            transition: 'all 0.3s ease'
         },
         tableContainer: {
             borderRadius: '18px',
             overflow: 'hidden',
             backgroundColor: 'transparent',
             backdropFilter: 'blur(8px)',
-            border: `1px solid ${purpleTheme.border}`,
-            boxShadow: purpleTheme.cardGlow
+            border: `1px solid ${currentTheme.border}`,
+            boxShadow: currentTheme.cardGlow,
+            transition: 'all 0.5s ease'
         },
         tableHead: {
             '& .MuiTableCell-root': {
-                backgroundColor: purpleTheme.bgTertiary,
-                color: purpleTheme.textPrimary,
+                backgroundColor: currentTheme.bgTertiary,
+                color: currentTheme.textPrimary,
                 fontWeight: 600,
-                borderBottom: `1px solid ${purpleTheme.border}`,
+                borderBottom: `1px solid ${currentTheme.border}`,
                 fontSize: '0.9rem',
                 textTransform: 'uppercase',
-                letterSpacing: '0.05em'
+                letterSpacing: '0.05em',
+                transition: 'all 0.5s ease'
             }
         },
         tableRow: (index: number) => ({
             backgroundColor: index % 2 === 0
-                ? 'rgba(60, 45, 80, 0.3)'
-                : 'rgba(40, 30, 60, 0.3)',
-            borderBottom: `1px solid ${purpleTheme.border}`,
-            transition: 'all 0.2s ease',
+                ? `${currentTheme.bgTertiary}`
+                : `${currentTheme.bgSecondary}`,
+            borderBottom: `1px solid ${currentTheme.border}`,
+            transition: 'all 0.3s ease',
             '&:hover': {
-                backgroundColor: 'rgba(157, 78, 221, 0.15)',
-                boxShadow: 'inset 0 0 15px rgba(157, 78, 221, 0.1)'
+                backgroundColor: `${currentTheme.accentSecondary}15`,
+                boxShadow: `inset 0 0 15px ${currentTheme.accentSecondary}10`
             }
         }),
         tableCell: {
             borderBottom: 'none',
-            color: purpleTheme.textPrimary,
-            fontSize: '0.95rem'
+            color: currentTheme.textPrimary,
+            fontSize: '0.95rem',
+            transition: 'all 0.3s ease'
         },
         aqiChip: (value: number) => ({
             borderRadius: '12px',
             fontWeight: 600,
-            color: '#000000',
+            color: darkMode ? '#000000' : '#FFFFFF',
             backgroundColor: getAQIColor(value),
             minWidth: '70px',
             textAlign: 'center',
@@ -312,46 +347,71 @@ const AllDataPage: React.FC = () => {
             }
         }),
         paginationButton: {
-            color: purpleTheme.accentTertiary,
+            color: currentTheme.accentTertiary,
             borderRadius: '50%',
             transition: 'all 0.3s ease',
             '&:hover': {
-                backgroundColor: 'rgba(157, 78, 221, 0.2)',
+                backgroundColor: `${currentTheme.accentSecondary}20`,
                 transform: animationsEnabled ? 'scale(1.1)' : 'none'
             },
             '&.Mui-disabled': {
-                color: 'rgba(224, 170, 255, 0.3)'
+                color: `${currentTheme.textDim}70`
             }
         },
         iconButton: {
-            color: purpleTheme.accentTertiary,
+            color: currentTheme.accentTertiary,
             transition: 'all 0.3s ease',
             '&:hover': {
-                backgroundColor: 'rgba(157, 78, 221, 0.2)',
+                backgroundColor: `${currentTheme.accentSecondary}20`,
                 transform: animationsEnabled ? 'rotate(15deg)' : 'none'
             }
         },
         switch: {
             '& .MuiSwitch-switchBase.Mui-checked': {
-                color: purpleTheme.accentSecondary
+                color: currentTheme.accentSecondary
             },
             '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                backgroundColor: purpleTheme.accentPrimary
+                backgroundColor: currentTheme.accentPrimary
             }
         },
         noDataMessage: {
-            color: purpleTheme.textDim,
+            color: currentTheme.textDim,
             fontStyle: 'italic',
             textAlign: 'center',
-            py: 3
+            py: 3,
+            transition: 'all 0.3s ease'
         },
         pagination: {
-            color: purpleTheme.textSecondary,
+            color: currentTheme.textSecondary,
             '& .MuiPaginationItem-root': {
-                color: purpleTheme.textPrimary
-            }
+                color: currentTheme.textPrimary
+            },
+            transition: 'all 0.3s ease'
+        },
+        themeIconContainer: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 24,
+            height: 24,
+            position: 'relative',
+            transition: 'all 0.3s ease'
+        },
+        themeIcon: {
+            position: 'absolute',
+            color: currentTheme.accentTertiary,
+            opacity: 1,
+            transform: 'scale(1)',
+            transition: 'all 0.4s ease'
+        },
+        hiddenThemeIcon: {
+            opacity: 0,
+            transform: 'scale(0.5)',
+            transition: 'all 0.3s ease'
         }
-    };
+    });
+
+    const glassyStyles = getThemeStyles();
 
     // Animation variants for framer-motion
     const containerVariants = {
@@ -387,6 +447,11 @@ const AllDataPage: React.FC = () => {
         })
     };
 
+    // Handle theme switch animation
+    const handleThemeToggle = () => {
+        setDarkMode(!darkMode);
+    };
+
     return (
         <Paper sx={glassyStyles.container}>
             <MotionBox
@@ -401,7 +466,7 @@ const AllDataPage: React.FC = () => {
                         </Typography>
                     </MotionBox>
 
-                    <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                         <FormControlLabel
                             control={
                                 <Switch
@@ -413,8 +478,8 @@ const AllDataPage: React.FC = () => {
                             }
                             label={
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <VisibilityIcon fontSize="small" sx={{ mr: 0.5 }} />
-                                    <Typography variant="body2">Animations</Typography>
+                                    <VisibilityIcon fontSize="small" sx={{ mr: 0.5, color: currentTheme.textDim }} />
+                                    <Typography variant="body2" sx={{ color: currentTheme.textDim }}>Animations</Typography>
                                 </Box>
                             }
                         />
@@ -423,18 +488,32 @@ const AllDataPage: React.FC = () => {
                             control={
                                 <Switch
                                     checked={darkMode}
-                                    onChange={(e) => setDarkMode(e.target.checked)}
+                                    onChange={handleThemeToggle}
                                     sx={glassyStyles.switch}
                                     size="small"
                                 />
                             }
                             label={
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                    {darkMode ?
-                                        <NightIcon fontSize="small" sx={{ mr: 0.5 }} /> :
-                                        <SunnyIcon fontSize="small" sx={{ mr: 0.5 }} />
-                                    }
-                                    <Typography variant="body2">Dark</Typography>
+                                    <Box sx={glassyStyles.themeIconContainer}>
+                                        <NightIcon
+                                            fontSize="small"
+                                            sx={{
+                                                ...glassyStyles.themeIcon,
+                                                ...(darkMode ? {} : glassyStyles.hiddenThemeIcon)
+                                            }}
+                                        />
+                                        <SunnyIcon
+                                            fontSize="small"
+                                            sx={{
+                                                ...glassyStyles.themeIcon,
+                                                ...(darkMode ? glassyStyles.hiddenThemeIcon : {})
+                                            }}
+                                        />
+                                    </Box>
+                                    <Typography variant="body2" sx={{ ml: 0.5, color: currentTheme.textDim }}>
+                                        {darkMode ? "Dark" : "Light"}
+                                    </Typography>
                                 </Box>
                             }
                         />
@@ -445,7 +524,7 @@ const AllDataPage: React.FC = () => {
                     <Grid item xs={12} md={8}>
                         <MotionBox variants={itemVariants}>
                             <Box sx={glassyStyles.searchBar}>
-                                <SearchIcon sx={{ color: purpleTheme.accentTertiary, mr: 1 }} />
+                                <SearchIcon sx={{ color: currentTheme.accentTertiary, mr: 1 }} />
                                 <TextField
                                     fullWidth
                                     placeholder="Search by ID, sensor, or location"
@@ -454,19 +533,21 @@ const AllDataPage: React.FC = () => {
                                     variant="standard"
                                     InputProps={{
                                         disableUnderline: true,
-                                        style: { color: purpleTheme.textPrimary }
+                                        style: { color: currentTheme.textPrimary }
                                     }}
                                     sx={{
                                         bgcolor: 'transparent',
                                         '& .MuiInputBase-input::placeholder': {
-                                            color: purpleTheme.textDim,
+                                            color: currentTheme.textDim,
                                             opacity: 1
                                         }
                                     }}
                                 />
-                                <IconButton size="small" sx={glassyStyles.iconButton}>
-                                    <FilterIcon />
-                                </IconButton>
+                                <Tooltip title="Filter Options">
+                                    <IconButton size="small" sx={glassyStyles.iconButton}>
+                                        <FilterIcon />
+                                    </IconButton>
+                                </Tooltip>
                             </Box>
                         </MotionBox>
                     </Grid>
@@ -476,20 +557,23 @@ const AllDataPage: React.FC = () => {
                             <FormControl fullWidth sx={{
                                 '& .MuiInputBase-root': {
                                     borderRadius: '50px',
-                                    backgroundColor: purpleTheme.bgSecondary,
-                                    border: `1px solid ${purpleTheme.border}`,
-                                    color: purpleTheme.textPrimary,
-                                    backdropFilter: 'blur(8px)'
+                                    backgroundColor: currentTheme.bgSecondary,
+                                    border: `1px solid ${currentTheme.border}`,
+                                    color: currentTheme.textPrimary,
+                                    backdropFilter: 'blur(8px)',
+                                    transition: 'all 0.3s ease'
                                 },
                                 '& .MuiInputLabel-root': {
-                                    color: purpleTheme.textDim,
-                                    marginLeft: '10px'
+                                    color: currentTheme.textDim,
+                                    marginLeft: '10px',
+                                    transition: 'all 0.3s ease'
                                 },
                                 '& .MuiOutlinedInput-notchedOutline': {
                                     border: 'none'
                                 },
                                 '& .MuiSelect-icon': {
-                                    color: purpleTheme.accentTertiary
+                                    color: currentTheme.accentTertiary,
+                                    transition: 'all 0.3s ease'
                                 }
                             }}>
                                 <InputLabel>Time Range</InputLabel>
@@ -519,7 +603,7 @@ const AllDataPage: React.FC = () => {
                                     Total Records
                                 </Typography>
                                 <Typography sx={glassyStyles.metricValue}>
-                                    {filteredData.length} <Typography component="span" variant="body2" sx={{ color: purpleTheme.textDim }}>/ {data.length}</Typography>
+                                    {filteredData.length} <Typography component="span" variant="body2" sx={{ color: currentTheme.textDim }}>/ {data.length}</Typography>
                                 </Typography>
                             </MotionCard>
                         </MotionBox>
@@ -543,7 +627,8 @@ const AllDataPage: React.FC = () => {
                                     left: 0,
                                     width: '100%',
                                     height: '4px',
-                                    background: `linear-gradient(to right, ${getAQIColor(avgAQI)}, transparent)`
+                                    background: `linear-gradient(to right, ${getAQIColor(avgAQI)}, transparent)`,
+                                    transition: 'all 0.3s ease'
                                 }} />
                             </MotionCard>
                         </MotionBox>
@@ -567,7 +652,8 @@ const AllDataPage: React.FC = () => {
                                     left: 0,
                                     width: '100%',
                                     height: '4px',
-                                    background: `linear-gradient(to right, ${getAQIColor(maxAQI)}, transparent)`
+                                    background: `linear-gradient(to right, ${getAQIColor(maxAQI)}, transparent)`,
+                                    transition: 'all 0.3s ease'
                                 }} />
                             </MotionCard>
                         </MotionBox>
@@ -575,25 +661,29 @@ const AllDataPage: React.FC = () => {
                 </Grid>
 
                 <MotionBox variants={itemVariants} sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mb: 3 }}>
-                    <Button
-                        startIcon={<RefreshIcon />}
-                        variant="contained"
-                        onClick={fetchAllData}
-                        disabled={loading}
-                        sx={glassyStyles.button('primary')}
-                    >
-                        Refresh
-                    </Button>
+                    <Tooltip title="Refresh Data">
+                        <Button
+                            startIcon={<RefreshIcon />}
+                            variant="contained"
+                            onClick={fetchAllData}
+                            disabled={loading}
+                            sx={glassyStyles.button('primary')}
+                        >
+                            Refresh
+                        </Button>
+                    </Tooltip>
 
-                    <Button
-                        variant="outlined"
-                        startIcon={<DownloadIcon />}
-                        onClick={exportCSV}
-                        disabled={!filteredData.length}
-                        sx={glassyStyles.button('secondary')}
-                    >
-                        Export CSV
-                    </Button>
+                    <Tooltip title="Download as CSV">
+                        <Button
+                            variant="outlined"
+                            startIcon={<DownloadIcon />}
+                            onClick={exportCSV}
+                            disabled={!filteredData.length}
+                            sx={glassyStyles.button('secondary')}
+                        >
+                            Export CSV
+                        </Button>
+                    </Tooltip>
                 </MotionBox>
 
                 {loading ? (
@@ -601,7 +691,7 @@ const AllDataPage: React.FC = () => {
                         variants={itemVariants}
                         sx={{ textAlign: 'center', my: 4 }}
                     >
-                        <CircularProgress sx={{ color: purpleTheme.accentSecondary }} />
+                        <CircularProgress sx={{ color: currentTheme.accentSecondary }} />
                     </MotionBox>
                 ) : (
                     <>
@@ -667,31 +757,74 @@ const AllDataPage: React.FC = () => {
                             variants={itemVariants}
                             sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 4 }}
                         >
-                            <IconButton
-                                disabled={page === 1}
-                                onClick={() => setPage(p => Math.max(1, p - 1))}
-                                sx={glassyStyles.paginationButton}
-                            >
-                                <ChevronLeftIcon />
-                            </IconButton>
+                            <Tooltip title="Previous Page">
+                                <span>
+                                    <IconButton
+                                        disabled={page === 1}
+                                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                                        sx={glassyStyles.paginationButton}
+                                    >
+                                        <ChevronLeftIcon />
+                                    </IconButton>
+                                </span>
+                            </Tooltip>
 
-                            <Typography variant="body2" sx={{ mx: 3, color: purpleTheme.textSecondary }}>
+                            <Typography variant="body2" sx={{ mx: 3, color: currentTheme.textSecondary }}>
                                 Page {page} of {Math.max(1, Math.ceil(filteredData.length / rowsPerPage))}
                             </Typography>
 
-                            <IconButton
-                                disabled={page >= Math.ceil(filteredData.length / rowsPerPage)}
-                                onClick={() => setPage(p => Math.min(Math.ceil(filteredData.length / rowsPerPage), p + 1))}
-                                sx={glassyStyles.paginationButton}
-                            >
-                                <ChevronRightIcon />
-                            </IconButton>
+                            <Tooltip title="Next Page">
+                                <span>
+                                    <IconButton
+                                        disabled={page >= Math.ceil(filteredData.length / rowsPerPage)}
+                                        onClick={() => setPage(p => Math.min(Math.ceil(filteredData.length / rowsPerPage), p + 1))}
+                                        sx={glassyStyles.paginationButton}
+                                    >
+                                        <ChevronRightIcon />
+                                    </IconButton>
+                                </span>
+                            </Tooltip>
                         </MotionBox>
                     </>
                 )}
             </MotionBox>
+
+            {/* Theme transition overlay */}
+            <Box
+                sx={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    pointerEvents: 'none',
+                    backgroundColor: darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
+                    opacity: 0,
+                    transition: 'opacity 0.5s ease',
+                    zIndex: 9999,
+                    '&.transitioning': {
+                        opacity: 1
+                    }
+                }}
+                className={animationsEnabled ? "theme-transition" : ""}
+            />
         </Paper>
     );
 };
+
+
+const style = document.createElement('style');
+style.textContent = `
+  .theme-transition {
+    animation: theme-flash 0.5s ease;
+  }
+  
+  @keyframes theme-flash {
+    0% { opacity: 0; }
+    50% { opacity: 0.3; }
+    100% { opacity: 0; }
+  }
+`;
+document.head.appendChild(style);
 
 export default AllDataPage;

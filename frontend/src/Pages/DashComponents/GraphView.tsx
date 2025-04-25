@@ -150,7 +150,7 @@ const GraphView: React.FC = () => {
         if (lastValue > 200 && lastValue <= 300) return "#8F3F97";
         if (lastValue > 150 && lastValue <= 200) return "#FF0000";
         if (lastValue > 100 && lastValue <= 150) return "#FF7E00";
-        if (lastValue > 50 && lastValue <= 100) return "#FFFF00";
+        if (lastValue > 50 && lastValue <= 100) return "#99da17";
         return "#00E400";
     };
 

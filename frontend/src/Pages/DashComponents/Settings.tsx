@@ -202,7 +202,7 @@ const SensorManagement: React.FC = () => {
         } catch (error) {
             setSnackbar({
                 open: true,
-                message: "Failed to update status.",
+                message: "Edit the sensor to activate/deactivate it.",
                 severity: "error"
             });
             console.error(error);

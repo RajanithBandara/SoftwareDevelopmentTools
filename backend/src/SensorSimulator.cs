@@ -88,7 +88,7 @@ public class SensorSimulationService : BackgroundService
             }
 
             // Simulate a realistic delay between readings (e.g., 30 minutes)
-            await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken);
         }
     }
 
