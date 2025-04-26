@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined, LogoutOutlined, CloudOutlined } from "@ant-design/icons";
 import { FaMapMarked, FaCloudSun } from "react-icons/fa";
-import { MdOutlineCrisisAlert, MdHistory } from "react-icons/md";
+import { MdOutlineCrisisAlert, MdHistory, MdSensors } from "react-icons/md";
 import { IoHome, IoSettingsSharp } from "react-icons/io5";
 import { Button, Layout, Menu, Avatar, Tooltip, Typography, Badge } from "antd";
 import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import AlertsPage from "./DashComponents/Alerts";
 import SensorManagement from "./DashComponents/Settings.tsx";
 import GraphView from "./DashComponents/GraphView.tsx";
 import AlertMessageSection from "./AlertMessageSection.tsx";
+import SensorReadings from "./DashComponents/SensorReadings.tsx";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -214,18 +215,21 @@ const Dashboard: React.FC = () => {
                     <Menu.Item key="2" icon={<FaMapMarked size={18} color={currentTheme.iconColor} />}>
                         <Link to="/dashboard/map" style={{ color: colors.textPrimary }}>AQI Map</Link>
                     </Menu.Item>
-                    <Menu.Item key="3" icon={
+                    <Menu.Item key="3" icon={<MdSensors size={18} color={currentTheme.iconColor} />}>
+                        <Link to="/dashboard/sensor-readings" style={{ color: colors.textPrimary }}>Sensor Readings</Link>
+                    </Menu.Item>
+                    <Menu.Item key="4" icon={
                         <Badge count={alertCount} size="small" offset={[2, 0]}>
                             <MdOutlineCrisisAlert size={18} color={colors.danger} />
                         </Badge>
                     }>
                         <Link to="/dashboard/alerts" style={{ color: colors.textPrimary }}>Alerts</Link>
                     </Menu.Item>
-                    <Menu.Item key="4" icon={<MdHistory size={18} color={currentTheme.iconColor} />}>
+                    <Menu.Item key="5" icon={<MdHistory size={18} color={currentTheme.iconColor} />}>
                         <Link to="/dashboard/history" style={{ color: colors.textPrimary }}>AQI History</Link>
                     </Menu.Item>
                     {userRole === "admin" && (
-                        <Menu.Item key="5" icon={<IoSettingsSharp size={18} color={currentTheme.iconColor} />}>
+                        <Menu.Item key="6" icon={<IoSettingsSharp size={18} color={currentTheme.iconColor} />}>
                             <Link to="/dashboard/settings" style={{ color: colors.textPrimary }}>Sensor Settings</Link>
                         </Menu.Item>
                     )}
@@ -327,6 +331,7 @@ const Dashboard: React.FC = () => {
                         <Routes>
                             <Route path="/" element={<DashboardHome />} />
                             <Route path="/map" element={<MapView />} />
+                            <Route path="/sensor-readings" element={<SensorReadings />} />
                             <Route path="/alerts" element={<AlertsPage />} />
                             <Route path="/history" element={<GraphView />} />
                             {(userRole === "admin" || userRole == "data analyst") && <Route path="/settings" element={<SensorManagement />} />}

@@ -88,6 +88,6 @@ namespace StudentApp.Models
         [MinLength(8)] // Ensure minimum security requirements
         public string PasswordHash { get; set; } = string.Empty;
 
-        [Required] [MaxLength(20)] public string Role { get; set; } = "User"; // Default role
+        [Required] [MaxLength(30)] public string Role { get; set; } = "User"; // Default role
     }
 }
