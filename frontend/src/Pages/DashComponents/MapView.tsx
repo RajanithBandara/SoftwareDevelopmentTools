@@ -81,7 +81,7 @@ const MapView: React.FC = () => {
         <MapContainer
             center={defaultCenter}
             zoom={zoomLevel}
-            style={{ height: "82vh", width: "100%", borderRadius: "20px" }}
+            style={{ height: "82vh", zIndex: 30, width: "100%", borderRadius: "20px" }}
         >
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

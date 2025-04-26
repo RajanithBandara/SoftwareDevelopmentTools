@@ -153,7 +153,6 @@ const AlertsPage: React.FC = () => {
         a.aqiLevel === 'Hazardous'
     ).length;
 
-    // Visual improvements: introduce a subtle background gradient and adjust spacing
     return (
         <motion.div
             initial={{ opacity: 0 }}
