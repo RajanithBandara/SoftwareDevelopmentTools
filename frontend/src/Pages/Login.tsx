@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -37,289 +38,125 @@ const Login = () => {
     };
 
     return (
-        <div className="ios-container">
+        <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-blue-50">
             {/* Background gradient circles */}
-            <div className="gradient-circle circle-1"></div>
-            <div className="gradient-circle circle-2"></div>
-            <div className="gradient-circle circle-3"></div>
+            <div className="absolute w-64 h-64 rounded-full bg-blue-300/80 filter blur-3xl -top-20 -left-20"></div>
+            <div className="absolute w-72 h-72 rounded-full bg-purple-300/70 filter blur-3xl -bottom-20 -right-20"></div>
+            <div className="absolute w-60 h-60 rounded-full bg-pink-200/60 filter blur-3xl top-1/2 left-1/3"></div>
 
-            <div className="glass-card">
-                <div className="header">
-                    <h2 className="title">AQI Monitor</h2>
-                    <p className="subtitle">Stay updated with real-time air quality reports</p>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="relative z-10 w-full max-w-md p-10 mx-4 bg-white/60 backdrop-blur-xl rounded-3xl shadow-xl border border-white/30"
+            >
+                <div className="mb-8 text-center">
+                    <motion.h2
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3, duration: 0.5 }}
+                        className="mb-2 text-3xl font-bold text-blue-900"
+                    >
+                        AQI Monitor
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4, duration: 0.5 }}
+                        className="text-slate-500"
+                    >
+                        Stay updated with real-time air quality reports
+                    </motion.p>
                 </div>
 
                 {error && (
-                    <div className="error-glass">
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        className="p-4 mb-6 text-left border-l-4 border-red-500 bg-red-50/70 backdrop-blur-sm rounded-lg text-red-700"
+                    >
                         <p>{error}</p>
-                    </div>
+                    </motion.div>
                 )}
 
                 <form onSubmit={onSubmit} noValidate>
-                    <div className="form-group">
-                        <div className="input-glass">
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5, duration: 0.5 }}
+                        className="mb-5"
+                    >
+                        <div className="overflow-hidden transition-all duration-300 bg-white/70 backdrop-blur-sm border border-white/50 rounded-2xl focus-within:border-blue-400 focus-within:shadow-blue-300/30 focus-within:shadow-lg">
                             <input
-                                id="email"
+                                className="w-full p-4 bg-transparent border-none outline-none text-slate-700 placeholder:text-slate-400"
                                 type="email"
+                                placeholder="Email Address"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                autoComplete="email"
-                                placeholder="Email Address"
                             />
                         </div>
-                    </div>
+                    </motion.div>
 
-                    <div className="form-group">
-                        <div className="input-glass">
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6, duration: 0.5 }}
+                        className="mb-6"
+                    >
+                        <div className="overflow-hidden transition-all duration-300 bg-white/70 backdrop-blur-sm border border-white/50 rounded-2xl focus-within:border-blue-400 focus-within:shadow-blue-300/30 focus-within:shadow-lg">
                             <input
-                                id="password"
+                                className="w-full p-4 bg-transparent border-none outline-none text-slate-700 placeholder:text-slate-400"
                                 type="password"
+                                placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                autoComplete="current-password"
-                                placeholder="Password"
                             />
                         </div>
-                    </div>
+                    </motion.div>
 
-                    <button
-                        type="submit"
-                        className={`ios-button ${loading ? 'loading' : ''}`}
-                        disabled={loading}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7, duration: 0.5 }}
                     >
-                        {loading ? (
-                            <>
-                                <span className="spinner"></span>
-                                <span>Signing In</span>
-                            </>
-                        ) : 'Sign In'}
-                    </button>
+                        <motion.button
+                            whileHover={{ y: -2 }}
+                            whileTap={{ y: 1 }}
+                            type="submit"
+                            disabled={loading}
+                            className={`relative w-full p-4 font-semibold text-white transition-all rounded-2xl ${
+                                loading
+                                    ? "bg-gradient-to-r from-blue-400 to-blue-500"
+                                    : "bg-gradient-to-r from-blue-500 to-blue-600 hover:shadow-lg hover:shadow-blue-500/30"
+                            } flex items-center justify-center`}
+                        >
+                            {loading ? (
+                                <>
+                                    <svg className="w-5 h-5 mr-2 -ml-1 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span>Signing In</span>
+                                </>
+                            ) : 'Sign In'}
+                        </motion.button>
+                    </motion.div>
                 </form>
 
-                <p className="register-text">
+                <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                    className="mt-7 text-center text-slate-500"
+                >
                     Don't have an account?{' '}
-                    <a href="/register" className="register-link">
+                    <a href="/register" className="font-semibold text-blue-600 transition-colors hover:text-blue-700">
                         Register now
                     </a>
-                </p>
-            </div>
-
-            <style jsx>{`
-        .ios-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          background: #f0f5ff;
-          padding: 20px;
-          box-sizing: border-box;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .gradient-circle {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(60px);
-        }
-
-        .circle-1 {
-          background: rgba(114, 196, 255, 0.8);
-          width: 300px;
-          height: 300px;
-          top: -100px;
-          left: -50px;
-        }
-
-        .circle-2 {
-          background: rgba(145, 107, 255, 0.7);
-          width: 350px;
-          height: 350px;
-          bottom: -100px;
-          right: -100px;
-        }
-
-        .circle-3 {
-          background: rgba(255, 172, 200, 0.6);
-          width: 250px;
-          height: 250px;
-          top: 50%;
-          left: 60%;
-        }
-
-        .glass-card {
-          background: rgba(255, 255, 255, 0.6);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border-radius: 24px;
-          padding: 40px;
-          width: 100%;
-          max-width: 380px;
-          text-align: center;
-          box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          animation: fadeUp 0.8s ease-out;
-          position: relative;
-          z-index: 10;
-        }
-
-        @keyframes fadeUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .header {
-          margin-bottom: 32px;
-        }
-
-        .title {
-          color: #1e3a8a;
-          font-size: 28px;
-          font-weight: 700;
-          margin: 0 0 10px 0;
-          letter-spacing: -0.5px;
-        }
-
-        .subtitle {
-          color: #64748b;
-          font-size: 15px;
-          font-weight: 400;
-          margin: 0;
-        }
-
-        .error-glass {
-          background: rgba(255, 235, 235, 0.7);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          border-radius: 12px;
-          padding: 12px 16px;
-          margin-bottom: 24px;
-          font-size: 14px;
-          border-left: 3px solid rgba(220, 38, 38, 0.8);
-          text-align: left;
-          color: #b91c1c;
-        }
-        
-        .error-glass p {
-          margin: 0;
-        }
-
-        .form-group {
-          margin-bottom: 20px;
-        }
-
-        .input-glass {
-          background: rgba(255, 255, 255, 0.7);
-          backdrop-filter: blur(4px);
-          -webkit-backdrop-filter: blur(4px);
-          border-radius: 14px;
-          overflow: hidden;
-          transition: all 0.3s ease;
-          border: 1px solid rgba(255, 255, 255, 0.5);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .input-glass:focus-within {
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-          border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        input {
-          width: 100%;
-          padding: 16px;
-          font-size: 16px;
-          border: none;
-          background: transparent;
-          color: #334155;
-          box-sizing: border-box;
-        }
-
-        input::placeholder {
-          color: #94a3b8;
-        }
-
-        input:focus {
-          outline: none;
-        }
-
-        .ios-button {
-          background: linear-gradient(135deg, #3b82f6, #2563eb);
-          color: white;
-          border: none;
-          border-radius: 14px;
-          padding: 16px;
-          font-size: 16px;
-          font-weight: 600;
-          width: 100%;
-          cursor: pointer;
-          margin-top: 12px;
-          transition: all 0.3s ease;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-
-        .ios-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
-        }
-
-        .ios-button:active {
-          transform: translateY(1px);
-        }
-
-        .ios-button.loading {
-          background: linear-gradient(135deg, #60a5fa, #3b82f6);
-        }
-
-        .ios-button:disabled {
-          opacity: 0.7;
-          cursor: not-allowed;
-        }
-
-        .spinner {
-          display: inline-block;
-          width: 18px;
-          height: 18px;
-          margin-right: 10px;
-          border: 2px solid rgba(255, 255, 255, 0.3);
-          border-radius: 50%;
-          border-top-color: white;
-          animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .register-text {
-          margin-top: 28px;
-          font-size: 15px;
-          color: #64748b;
-        }
-
-        .register-link {
-          color: #2563eb;
-          font-weight: 600;
-          text-decoration: none;
-          transition: color 0.2s;
-        }
-
-        .register-link:hover {
-          color: #1d4ed8;
-          text-decoration: none;
-        }
-      `}</style>
+                </motion.p>
+            </motion.div>
         </div>
     );
 };
