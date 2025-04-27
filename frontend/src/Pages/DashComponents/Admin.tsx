@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Button, Table, Space, Modal, Form, Input, Select, message } from 'antd';
 import { UserOutlined, PlusOutlined, DeleteOutlined, EditOutlined, LogoutOutlined, ReloadOutlined, DashboardOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const { Header, Sider, Content } = Layout;
@@ -26,6 +26,7 @@ const AdminDashboard: React.FC = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingUser, setEditingUser] = useState<User | null>(null);
     const [form] = Form.useForm();
+    const [pageSize, setPageSize] = useState(8);
 
     useEffect(() => {
         fetchUsers();
@@ -57,7 +58,7 @@ const AdminDashboard: React.FC = () => {
             name: user.username,
             email: user.email,
             role: user.role,
-            password: "" // leave password empty for optional update
+            password: ""
         });
         setIsModalVisible(true);
     };
@@ -72,16 +73,14 @@ const AdminDashboard: React.FC = () => {
         try {
             const values = await form.validateFields();
             if (isEditMode && editingUser) {
-                // Update existing user
                 await axios.put(`http://localhost:5000/api/user-edit/${editingUser.id}`, {
                     name: values.name,
                     email: values.email,
                     role: values.role,
-                    password: values.password // if empty, backend might ignore updating the password
+                    password: values.password
                 });
                 message.success("User updated successfully!");
             } else {
-                // Add new user
                 await axios.post("http://localhost:5000/api/user-edit/register", {
                     name: values.name,
                     email: values.email,
@@ -108,6 +107,16 @@ const AdminDashboard: React.FC = () => {
             message.error("Failed to delete user.");
             console.error(error);
         }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        message.success('Logged out successfully!');
+        navigate('/login');
+    };
+
+    const navigateToDashboard = () => {
+        navigate('/dashboard');
     };
 
     const columns = [
@@ -138,17 +147,6 @@ const AdminDashboard: React.FC = () => {
         },
     ];
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        message.success('Logged out successfully!');
-        // Navigate to login page
-        navigate('/login');
-    };
-
-    const navigateToDashboard = () => {
-        navigate('/dashboard');
-    };
-
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} theme="dark">
@@ -174,16 +172,38 @@ const AdminDashboard: React.FC = () => {
                             Go to Dashboard
                         </Button>
                         <Button icon={<ReloadOutlined />} onClick={fetchUsers} />
-                        <Button type="primary" icon={<LogoutOutlined />} onClick={handleLogout} danger>Logout</Button>
+                        <Button type="primary" danger icon={<LogoutOutlined />} onClick={handleLogout}>
+                            Logout
+                        </Button>
                     </Space>
                 </Header>
 
                 <Content style={{ margin: '16px', padding: '16px', background: '#fff', borderRadius: '8px' }}>
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
-                        <Button type="primary" icon={<PlusOutlined />} onClick={showUserModal} style={{ marginBottom: '16px' }}>
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            onClick={showUserModal}
+                            style={{ marginBottom: '16px' }}
+                        >
                             Add User
                         </Button>
-                        <Table columns={columns} dataSource={users} loading={loading} rowKey="id" />
+
+                        <Table
+                            columns={columns}
+                            dataSource={users}
+                            loading={loading}
+                            rowKey="id"
+                            pagination={{
+                                pageSize: pageSize,
+                                showSizeChanger: true,
+                                pageSizeOptions: ['8', '16', '32'],
+                                onShowSizeChange: (current, size) => setPageSize(size),
+                                showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} users`,
+                            }}
+                            bordered
+                            size="middle"
+                        />
                     </motion.div>
                 </Content>
             </Layout>
