@@ -48,3 +48,22 @@ namespace StudentApp.Controllers
         }
 
 
+
+         // PUT: api/settings/sensors/{id}
+        // Updates sensor settings (location, coordinates, etc.)
+        [HttpPut("sensors/{id}")]
+        public async Task<IActionResult> UpdateSensor(int id, [FromBody] Sensor sensor)
+        {
+            if (id != sensor.Id)
+            {
+                return BadRequest("Sensor ID mismatch.");
+            }
+
+            _context.Entry(sensor).State = EntityState.Modified;
+
+            
+            return NoContent();
+        }
+
+
+
