@@ -1,5 +1,3 @@
-// frontend -- allData.tsx
-
 import React, { useEffect, useState } from "react";
 import {
     Paper, Typography, Button, TextField, Tooltip, Chip,
