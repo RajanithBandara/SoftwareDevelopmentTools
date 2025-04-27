@@ -25,6 +25,17 @@ namespace StudentApp.Controllers
         /// Gets all users.
         /// </summary>
         
+         [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        {
+            var users = await _context.Users.ToListAsync();
+            return Ok(users);
+        }
+
+        /// <summary>
+        /// Registers a new user.
+        /// </summary>
+        
          // DTOs (Data Transfer Objects) for user creation and updating
     public class CreateUserModel
     {
