@@ -61,6 +61,22 @@ namespace StudentApp.Controllers
 
             _context.Entry(sensor).State = EntityState.Modified;
 
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SensorExists(id))
+                {
+                    return NotFound("Sensor not found.");
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
             
             return NoContent();
         }
