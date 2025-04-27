@@ -24,7 +24,8 @@ namespace StudentApp.Controllers
         /// <summary>
         /// Gets all users.
         /// </summary>
-        [HttpGet]
+        
+         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             var users = await _context.Users.ToListAsync();
@@ -34,6 +35,7 @@ namespace StudentApp.Controllers
         /// <summary>
         /// Registers a new user.
         /// </summary>
+        
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] CreateUserModel model)
         {
@@ -57,6 +59,7 @@ namespace StudentApp.Controllers
         /// <summary>
         /// Updates an existing user.
         /// </summary>
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserModel model)
         {
@@ -80,6 +83,7 @@ namespace StudentApp.Controllers
         /// <summary>
         /// Deletes a user.
         /// </summary>
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -93,8 +97,8 @@ namespace StudentApp.Controllers
             return Ok(new { message = "User deleted successfully." });
         }
     }
-
-    // DTOs (Data Transfer Objects) for user creation and updating
+        
+         // DTOs (Data Transfer Objects) for user creation and updating
     public class CreateUserModel
     {
         public string Name { get; set; }
