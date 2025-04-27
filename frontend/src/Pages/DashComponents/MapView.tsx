@@ -13,6 +13,8 @@ interface Sensor {
     aqiValue: number;
 }
 
+
+
 // AQI categories and colors
 const getAQICategory = (aqi: number): { label: string, color: string } => {
     if (aqi <= 50) return { label: "Good", color: "#00e400" };              // Green
@@ -52,6 +54,8 @@ const createAQIIcon = (aqi: number) => {
         popupAnchor: [0, -12]
     });
 };
+
+
 
 const MapView: React.FC = () => {
     const [sensors, setSensors] = useState<Sensor[]>([]);
@@ -157,5 +161,8 @@ const MapView: React.FC = () => {
         </MapContainer>
     );
 };
+
+
+
 
 export default MapView;

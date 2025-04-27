@@ -18,7 +18,8 @@ namespace StudentApp.Controllers
             _context = context;
         }
 
-        // GET: api/settings/sensors
+
+         // GET: api/settings/sensors
         [HttpGet("sensors")]
         public async Task<IActionResult> GetSensors()
         {
@@ -26,7 +27,10 @@ namespace StudentApp.Controllers
             return Ok(sensors);
         }
 
-        // POST: api/settings/sensors
+
+
+
+         // POST: api/settings/sensors
         // Adds a new sensor
         [HttpPost("sensors")]
         public async Task<IActionResult> AddSensor([FromBody] Sensor sensor)
@@ -36,13 +40,16 @@ namespace StudentApp.Controllers
                 return BadRequest("Sensor data is null.");
             }
 
+
             _context.Sensors.Add(sensor);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetSensors), new { id = sensor.Id }, sensor);
         }
 
-        // PUT: api/settings/sensors/{id}
+
+
+         // PUT: api/settings/sensors/{id}
         // Updates sensor settings (location, coordinates, etc.)
         [HttpPut("sensors/{id}")]
         public async Task<IActionResult> UpdateSensor(int id, [FromBody] Sensor sensor)
@@ -70,8 +77,12 @@ namespace StudentApp.Controllers
                 }
             }
 
+            
             return NoContent();
         }
+
+
+
 
         // DELETE: api/settings/sensors/{id}
         // Deletes a sensor
@@ -88,6 +99,8 @@ namespace StudentApp.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+
 
         // PUT: api/settings/sensors/{id}/status
         // Updates sensor status (on/off)
@@ -112,3 +125,8 @@ namespace StudentApp.Controllers
         }
     }
 }
+
+
+
+
+

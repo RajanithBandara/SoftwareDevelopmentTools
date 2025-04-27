@@ -36,6 +36,7 @@ const Login = () => {
         }
     };
 
+
     return (
         <div className="ios-container">
             {/* Background gradient circles */}
@@ -105,6 +106,9 @@ const Login = () => {
                     </a>
                 </p>
             </div>
+
+
+
 
             <style jsx>{`
         .ios-container {
@@ -319,9 +323,13 @@ const Login = () => {
           color: #1d4ed8;
           text-decoration: none;
         }
-      `}</style>
+      `}
+      </style>
         </div>
     );
 };
 
+
+
 export default Login;
+

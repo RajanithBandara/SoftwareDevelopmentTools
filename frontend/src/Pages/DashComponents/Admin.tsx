@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Menu, Button, Table, Space, Modal, Form, Input, Select, message } from 'antd';
-import { UserOutlined, PlusOutlined, DeleteOutlined, EditOutlined, LogoutOutlined, ReloadOutlined, DashboardOutlined } from '@ant-design/icons';
+import {
+    Layout, Menu, Button, Table, Space, Modal, Form, Input, Select, message,
+    Popconfirm
+} from 'antd';
+import {
+    UserOutlined, PlusOutlined, DeleteOutlined, EditOutlined,
+    LogoutOutlined, ReloadOutlined, DashboardOutlined, SyncOutlined,
+    MenuFoldOutlined, MenuUnfoldOutlined
+} from '@ant-design/icons';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -42,6 +49,16 @@ const AdminDashboard: React.FC = () => {
             console.error(error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const resetSensors = async () => {
+        try {
+            await axios.put("http://localhost:5000/api/settings/sensors/reset");
+            message.success("All sensors reset successfully!");
+        } catch (error) {
+            message.error("Failed to reset sensors.");
+            console.error(error);
         }
     };
 
@@ -156,6 +173,15 @@ const AdminDashboard: React.FC = () => {
                     <Menu.Item key="2" icon={<DashboardOutlined />} onClick={navigateToDashboard}>
                         Main Dashboard
                     </Menu.Item>
+                    {/*<Menu.Item key="3" icon={<LogoutOutlined />} onClick={() => Modal.confirm({
+                        title: 'Reset all sensors?',
+                        content: 'This will reset all sensor readings to 0. Are you sure?',
+                        okText: 'Yes, reset',
+                        cancelText: 'Cancel',
+                        onOk: resetSensors
+                    })}>
+                        Reset Sensors
+                    </Menu.Item>*/}
                 </Menu>
             </Sider>
 
@@ -165,13 +191,21 @@ const AdminDashboard: React.FC = () => {
                     <Space>
                         <Button
                             type="primary"
-                            icon={<DashboardOutlined />}
-                            onClick={navigateToDashboard}
-                            style={{ marginRight: '8px' }}
-                        >
-                            Go to Dashboard
-                        </Button>
+                            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                            onClick={() => setCollapsed(!collapsed)}
+                        />
                         <Button icon={<ReloadOutlined />} onClick={fetchUsers} />
+                        <Popconfirm
+                            title="Reset all sensors?"
+                            description="This will reset sensor readings to 0. Are you sure?"
+                            onConfirm={resetSensors}
+                            okText="Yes, reset"
+                            cancelText="Cancel"
+                        >
+                            <Button icon={<SyncOutlined />} type="dashed">
+                                Reset Sensors
+                            </Button>
+                        </Popconfirm>
                         <Button type="primary" danger icon={<LogoutOutlined />} onClick={handleLogout}>
                             Logout
                         </Button>
@@ -195,10 +229,10 @@ const AdminDashboard: React.FC = () => {
                             loading={loading}
                             rowKey="id"
                             pagination={{
-                                pageSize: pageSize,
+                                pageSize,
                                 showSizeChanger: true,
                                 pageSizeOptions: ['8', '16', '32'],
-                                onShowSizeChange: (current, size) => setPageSize(size),
+                                onShowSizeChange: (_, size) => setPageSize(size),
                                 showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} users`,
                             }}
                             bordered

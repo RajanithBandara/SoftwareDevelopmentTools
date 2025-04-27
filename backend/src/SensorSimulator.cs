@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using StudentApp.Data;
 using StudentApp.Models;
 
+
 public class SensorSimulationService : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
@@ -20,6 +21,7 @@ public class SensorSimulationService : BackgroundService
         _scopeFactory = scopeFactory;
         _logger = logger;
     }
+
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -91,6 +93,7 @@ public class SensorSimulationService : BackgroundService
             await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken);
         }
     }
+    
 
     /// <summary>
     /// Generates a realistic AQI value based on the previous reading.
@@ -120,3 +123,5 @@ public class SensorSimulationService : BackgroundService
         return Math.Clamp(trendFactor, 30, 500);
     }
 }
+
+

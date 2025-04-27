@@ -13,7 +13,9 @@ import GraphView from "./DashComponents/GraphView.tsx";
 import AlertMessageSection from "./AlertMessageSection.tsx";
 import SensorReadings from "./DashComponents/SensorReadings.tsx";
 
+
 const { Header, Sider, Content } = Layout;
+
 const { Text } = Typography;
 
 const colors = {
@@ -27,6 +29,7 @@ const colors = {
     borderColor: "#d9e8f6", // Light blue border
 };
 
+
 // Time-based theme colors
 const timeThemes = {
     morning: {
@@ -36,6 +39,7 @@ const timeThemes = {
         borderColor: "#c0d8f7",
         iconColor: "#4a7fcb"
     },
+
     midday: {
         gradient: "linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)",
         siderBg: "#e0f5ff",
@@ -43,6 +47,7 @@ const timeThemes = {
         borderColor: "#b8e7ff",
         iconColor: "#0086e6"
     },
+
     evening: {
         gradient: "linear-gradient(120deg, #f6d365 0%, #fda085 100%)",
         siderBg: "#fff0e0",
@@ -50,6 +55,7 @@ const timeThemes = {
         borderColor: "#ffe0c0",
         iconColor: "#ff8c38"
     },
+
     night: {
         gradient: "linear-gradient(120deg, #4b6cb7 0%, #182848 100%)",
         siderBg: "#d6e0f5",
@@ -81,6 +87,7 @@ const Dashboard: React.FC = () => {
             return timeThemes.night;
         }
     };
+
 
     useEffect(() => {
         // Set initial theme based on time
@@ -114,6 +121,7 @@ const Dashboard: React.FC = () => {
         return () => clearInterval(themeInterval);
     }, [navigate]);
 
+
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -133,6 +141,7 @@ const Dashboard: React.FC = () => {
             .toUpperCase()
             .substring(0, 2);
     };
+
 
     return (
         <Layout style={{ height: "100vh" }}>
@@ -168,6 +177,7 @@ const Dashboard: React.FC = () => {
                         <FaCloudSun size={24} color={currentTheme.iconColor} />
                     )}
                 </div>
+
 
                 <div
                     style={{
@@ -316,6 +326,7 @@ const Dashboard: React.FC = () => {
                         </Avatar>
                     </div>
                 </Header>
+                
                 <Content
                     style={{
                         margin: "16px",
@@ -345,3 +356,4 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+

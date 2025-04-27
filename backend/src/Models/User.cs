@@ -72,7 +72,6 @@ namespace StudentApp.Models
         public DateTime RecordedAt { get; set; } = DateTime.UtcNow;
     }
 
-
     public class User
     {
         [Key] public int Id { get; set; }
@@ -91,3 +90,4 @@ namespace StudentApp.Models
         [Required] [MaxLength(30)] public string Role { get; set; } = "User"; // Default role
     }
 }
+

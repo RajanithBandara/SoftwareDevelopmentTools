@@ -4,7 +4,6 @@ using StudentApp.Data;
 using System.Threading.Tasks;
 using StudentApp.Models;
 
-
 [Route("api/health-status")]
 [ApiController]
 public class HealthCheckController : ControllerBase
@@ -45,3 +44,4 @@ public class HealthCheckController : ControllerBase
         }
     }
 }
+

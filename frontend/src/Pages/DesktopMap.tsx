@@ -24,6 +24,9 @@ const getAQICategory = (aqi: number): { label: string, color: string, textColor:
     return { label: "Hazardous", color: "#7e0023", textColor: "#ffffff" };
 };
 
+
+
+
 // Create a custom icon factory function
 const createAQIIcon = (aqi: number) => {
     const { color, textColor } = getAQICategory(aqi);
@@ -334,5 +337,7 @@ const DesktopMapView: React.FC = () => {
         </div>
     );
 };
+
+
 
 export default DesktopMapView;
