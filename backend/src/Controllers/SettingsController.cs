@@ -26,3 +26,25 @@ namespace StudentApp.Controllers
             var sensors = await _context.Sensors.ToListAsync();
             return Ok(sensors);
         }
+
+
+
+
+         // POST: api/settings/sensors
+        // Adds a new sensor
+        [HttpPost("sensors")]
+        public async Task<IActionResult> AddSensor([FromBody] Sensor sensor)
+        {
+            if (sensor == null)
+            {
+                return BadRequest("Sensor data is null.");
+            }
+
+
+            _context.Sensors.Add(sensor);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetSensors), new { id = sensor.Id }, sensor);
+        }
+
+
