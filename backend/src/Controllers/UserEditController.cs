@@ -36,6 +36,68 @@ namespace StudentApp.Controllers
         /// Registers a new user.
         /// </summary>
         
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterUser([FromBody] CreateUserModel model)
+        {
+            if (await _context.Users.AnyAsync(u => u.Email == model.Email))
+                return BadRequest(new { message = "Email already in use." });
+
+            var user = new User
+            {
+                Username = model.Name,
+                Email = model.Email,
+                Role = model.Role,
+                PasswordHash = _passwordHasher.HashPassword(null, model.Password)
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
+        }
+
+        /// <summary>
+        /// Updates an existing user.
+        /// </summary>
+        
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserModel model)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                return NotFound(new { message = "User not found." });
+
+            user.Username = model.Name ?? user.Username;
+            user.Email = model.Email ?? user.Email;
+            user.Role = model.Role ?? user.Role;
+
+            if (!string.IsNullOrWhiteSpace(model.Password))
+                user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(user);
+        }
+
+        /// <summary>
+        /// Deletes a user.
+        /// </summary>
+        
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                return NotFound(new { message = "User not found." });
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "User deleted successfully." });
+        }
+    }
+        
          // DTOs (Data Transfer Objects) for user creation and updating
     public class CreateUserModel
     {
