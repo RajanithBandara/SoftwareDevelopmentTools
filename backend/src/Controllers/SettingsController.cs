@@ -17,3 +17,12 @@ namespace StudentApp.Controllers
         {
             _context = context;
         }
+
+
+         // GET: api/settings/sensors
+        [HttpGet("sensors")]
+        public async Task<IActionResult> GetSensors()
+        {
+            var sensors = await _context.Sensors.ToListAsync();
+            return Ok(sensors);
+        }
