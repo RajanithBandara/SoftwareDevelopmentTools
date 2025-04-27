@@ -36,3 +36,74 @@ const Login = () => {
         }
     };
 
+
+    return (
+        <div className="ios-container">
+            {/* Background gradient circles */}
+            <div className="gradient-circle circle-1"></div>
+            <div className="gradient-circle circle-2"></div>
+            <div className="gradient-circle circle-3"></div>
+
+            <div className="glass-card">
+                <div className="header">
+                    <h2 className="title">AQI Monitor</h2>
+                    <p className="subtitle">Stay updated with real-time air quality reports</p>
+                </div>
+
+                {error && (
+                    <div className="error-glass">
+                        <p>{error}</p>
+                    </div>
+                )}
+
+                <form onSubmit={onSubmit} noValidate>
+                    <div className="form-group">
+                        <div className="input-glass">
+                            <input
+                                id="email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                autoComplete="email"
+                                placeholder="Email Address"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <div className="input-glass">
+                            <input
+                                id="password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                autoComplete="current-password"
+                                placeholder="Password"
+                            />
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        className={`ios-button ${loading ? 'loading' : ''}`}
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <>
+                                <span className="spinner"></span>
+                                <span>Signing In</span>
+                            </>
+                        ) : 'Sign In'}
+                    </button>
+                </form>
+
+                <p className="register-text">
+                    Don't have an account?{' '}
+                    <a href="/register" className="register-link">
+                        Register now
+                    </a>
+                </p>
+            </div>
+
