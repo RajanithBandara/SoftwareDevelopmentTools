@@ -40,7 +40,7 @@ namespace StudentApp.Models
         [Required]
         [MaxLength(500)] // Limit message length
         public string AlertMessage { get; set; } = string.Empty;
-        
+
         public string AqiLevel { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
