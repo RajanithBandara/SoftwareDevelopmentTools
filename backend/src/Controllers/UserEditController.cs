@@ -60,6 +60,30 @@ namespace StudentApp.Controllers
         /// Updates an existing user.
         /// </summary>
         
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserModel model)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                return NotFound(new { message = "User not found." });
+
+            user.Username = model.Name ?? user.Username;
+            user.Email = model.Email ?? user.Email;
+            user.Role = model.Role ?? user.Role;
+
+            if (!string.IsNullOrWhiteSpace(model.Password))
+                user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(user);
+        }
+
+        /// <summary>
+        /// Deletes a user.
+        /// </summary>
+        
          // DTOs (Data Transfer Objects) for user creation and updating
     public class CreateUserModel
     {
