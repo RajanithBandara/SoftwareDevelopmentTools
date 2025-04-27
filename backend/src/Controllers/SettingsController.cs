@@ -102,4 +102,31 @@ namespace StudentApp.Controllers
 
 
 
+        // PUT: api/settings/sensors/{id}/status
+        // Updates sensor status (on/off)
+        [HttpPut("sensors/{id}/status")]
+        public async Task<IActionResult> UpdateSensorStatus(int id, [FromBody] bool status)
+        {
+            var sensor = await _context.Sensors.FindAsync(id);
+            if (sensor == null)
+            {
+                return NotFound("Sensor not found.");
+            }
+
+            sensor.Status = status;
+            _context.Entry(sensor).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return Ok(sensor);
+        }
+
+        private bool SensorExists(int id)
+        {
+            return _context.Sensors.Any(s => s.Id == id);
+        }
+    }
+}
+
+
+
+
 
