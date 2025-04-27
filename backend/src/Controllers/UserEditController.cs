@@ -36,6 +36,30 @@ namespace StudentApp.Controllers
         /// Registers a new user.
         /// </summary>
         
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterUser([FromBody] CreateUserModel model)
+        {
+            if (await _context.Users.AnyAsync(u => u.Email == model.Email))
+                return BadRequest(new { message = "Email already in use." });
+
+            var user = new User
+            {
+                Username = model.Name,
+                Email = model.Email,
+                Role = model.Role,
+                PasswordHash = _passwordHasher.HashPassword(null, model.Password)
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
+        }
+
+        /// <summary>
+        /// Updates an existing user.
+        /// </summary>
+        
          // DTOs (Data Transfer Objects) for user creation and updating
     public class CreateUserModel
     {
