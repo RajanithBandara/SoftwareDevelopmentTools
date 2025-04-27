@@ -83,3 +83,23 @@ namespace StudentApp.Controllers
 
 
 
+
+        // DELETE: api/settings/sensors/{id}
+        // Deletes a sensor
+        [HttpDelete("sensors/{id}")]
+        public async Task<IActionResult> DeleteSensor(int id)
+        {
+            var sensor = await _context.Sensors.FindAsync(id);
+            if (sensor == null)
+            {
+                return NotFound("Sensor not found.");
+            }
+
+            _context.Sensors.Remove(sensor);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+
+
+
