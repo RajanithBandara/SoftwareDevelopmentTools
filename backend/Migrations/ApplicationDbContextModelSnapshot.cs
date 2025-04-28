@@ -22,13 +22,17 @@ namespace backend.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AirQualityReading", b =>
+            modelBuilder.Entity("StudentApp.Models.AirQualityReading", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AQILevel")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("AqiValue")
                         .HasColumnType("integer");
@@ -46,7 +50,7 @@ namespace backend.Migrations
                     b.ToTable("AirQualityReadings", (string)null);
                 });
 
-            modelBuilder.Entity("Alert", b =>
+            modelBuilder.Entity("StudentApp.Models.Alert", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,13 +58,17 @@ namespace backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AQILevel")
-                        .HasColumnType("integer");
-
                     b.Property<string>("AlertMessage")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<string>("AqiLevel")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("AqiValue")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -75,13 +83,16 @@ namespace backend.Migrations
                     b.ToTable("Alerts", (string)null);
                 });
 
-            modelBuilder.Entity("Sensor", b =>
+            modelBuilder.Entity("StudentApp.Models.Sensor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("LastAqi")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Latitude")
                         .HasColumnType("decimal(9,6)");
@@ -102,7 +113,7 @@ namespace backend.Migrations
                     b.ToTable("Sensors", (string)null);
                 });
 
-            modelBuilder.Entity("User", b =>
+            modelBuilder.Entity("StudentApp.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -121,8 +132,8 @@ namespace backend.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -134,9 +145,9 @@ namespace backend.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("AirQualityReading", b =>
+            modelBuilder.Entity("StudentApp.Models.AirQualityReading", b =>
                 {
-                    b.HasOne("Sensor", "Sensor")
+                    b.HasOne("StudentApp.Models.Sensor", "Sensor")
                         .WithMany()
                         .HasForeignKey("SensorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -145,9 +156,9 @@ namespace backend.Migrations
                     b.Navigation("Sensor");
                 });
 
-            modelBuilder.Entity("Alert", b =>
+            modelBuilder.Entity("StudentApp.Models.Alert", b =>
                 {
-                    b.HasOne("Sensor", "Sensor")
+                    b.HasOne("StudentApp.Models.Sensor", "Sensor")
                         .WithMany()
                         .HasForeignKey("SensorId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using StudentApp.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using StudentApp.Models;
+
 
 namespace StudentApp.Controllers
 {
@@ -30,7 +32,8 @@ namespace StudentApp.Controllers
                 .Select(a => new
                 {
                     sensorId = a.SensorId,
-                    AQIlevel = a.AQILevel
+                    AQIValue = a.AqiValue,
+                    AQILevel = a.AqiLevel,
                 })
                 .ToListAsync();
 

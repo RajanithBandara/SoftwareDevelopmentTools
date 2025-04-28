@@ -4,17 +4,6 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import axios from "axios";
 
-// Fix default icon issue in Leaflet with React
-import markerIconPng from "leaflet/dist/images/marker-icon.png";
-import markerShadowPng from "leaflet/dist/images/marker-shadow.png";
-
-const defaultIcon = new L.Icon({
-    iconUrl: markerIconPng,
-    shadowUrl: markerShadowPng,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-});
-
 // Define a type for sensor details
 interface Sensor {
     id: number;
@@ -23,6 +12,50 @@ interface Sensor {
     longitude: number;
     aqiValue: number;
 }
+
+
+
+// AQI categories and colors
+const getAQICategory = (aqi: number): { label: string, color: string } => {
+    if (aqi <= 50) return { label: "Good", color: "#00e400" };              // Green
+    if (aqi <= 100) return { label: "Moderate", color: "#ffff00" };         // Yellow
+    if (aqi <= 150) return { label: "Unhealthy for Sensitive", color: "#ff7e00" }; // Orange
+    if (aqi <= 200) return { label: "Unhealthy", color: "#ff0000" };        // Red
+    if (aqi <= 300) return { label: "Very Unhealthy", color: "#8f3f97" };   // Purple
+    return { label: "Hazardous", color: "#7e0023" };                        // Maroon
+};
+
+// Create a custom icon factory function
+const createAQIIcon = (aqi: number) => {
+    const { color } = getAQICategory(aqi);
+
+    return L.divIcon({
+        className: "custom-aqi-icon",
+        html: `
+            <div style="
+                background-color: ${color};
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: 2px solid #ffffff;
+                box-shadow: 0 0 4px rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: ${aqi > 150 ? '#ffffff' : '#000000'};
+                font-size: 10px;
+                font-weight: bold;
+            ">
+                ${aqi}
+            </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+        popupAnchor: [0, -12]
+    });
+};
+
+
 
 const MapView: React.FC = () => {
     const [sensors, setSensors] = useState<Sensor[]>([]);
@@ -41,29 +74,95 @@ const MapView: React.FC = () => {
         };
 
         fetchSensors();
+
+        // Set up interval for regular updates
+        const interval = setInterval(fetchSensors, 60000); // Update every minute
+
+        return () => clearInterval(interval);
     }, []);
 
     return (
         <MapContainer
             center={defaultCenter}
             zoom={zoomLevel}
-            style={{ height: "80vh", width: "100%", borderRadius: "20px" }}
+            style={{ height: "82vh", zIndex: 30, width: "100%", borderRadius: "20px" }}
         >
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            {sensors.map((sensor) => (
-                <Marker key={sensor.id} position={[sensor.latitude, sensor.longitude]} icon={defaultIcon}>
-                    <Popup>
-                        <strong>{sensor.location}</strong> <br />
-                        AQI: {sensor.aqiValue}
-                    </Popup>
-                </Marker>
-            ))}
+            {sensors.map((sensor) => {
+                const { label, color } = getAQICategory(sensor.aqiValue);
+
+                return (
+                    <Marker
+                        key={sensor.id}
+                        position={[sensor.latitude, sensor.longitude]}
+                        icon={createAQIIcon(sensor.aqiValue)}
+                    >
+                        <Popup>
+                            <div style={{ textAlign: "center" }}>
+                                <strong>{sensor.location}</strong>
+                                <div
+                                    style={{
+                                        backgroundColor: color,
+                                        color: sensor.aqiValue > 150 ? "#ffffff" : "#000000",
+                                        padding: "3px 8px",
+                                        borderRadius: "4px",
+                                        margin: "5px 0",
+                                        fontWeight: "bold"
+                                    }}
+                                >
+                                    AQI: {sensor.aqiValue} - {label}
+                                </div>
+                                <div style={{ fontSize: "0.8rem" }}>
+                                    Last updated: {new Date().toLocaleTimeString()}
+                                </div>
+                            </div>
+                        </Popup>
+                    </Marker>
+                );
+            })}
+
+            {/* Legend */}
+            <div className="map-legend" style={{
+                position: "absolute",
+                bottom: "20px",
+                right: "20px",
+                backgroundColor: "white",
+                padding: "10px",
+                borderRadius: "5px",
+                boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+                zIndex: 1000
+            }}>
+                <div style={{ fontWeight: "bold", marginBottom: "5px" }}>Air Quality Index</div>
+                {[
+                    { range: "0-50", label: "Good", color: "#00e400" },
+                    { range: "51-100", label: "Moderate", color: "#ffff00" },
+                    { range: "101-150", label: "Unhealthy for Sensitive Groups", color: "#ff7e00" },
+                    { range: "151-200", label: "Unhealthy", color: "#ff0000" },
+                    { range: "201-300", label: "Very Unhealthy", color: "#8f3f97" },
+                    { range: "301+", label: "Hazardous", color: "#7e0023" }
+                ].map((item, index) => (
+                    <div key={index} style={{ display: "flex", alignItems: "center", margin: "2px 0" }}>
+                        <div style={{
+                            width: "15px",
+                            height: "15px",
+                            backgroundColor: item.color,
+                            marginRight: "5px",
+                            borderRadius: "50%",
+                            border: "1px solid #ccc"
+                        }}></div>
+                        <div style={{ fontSize: "0.8rem" }}>{item.range}: {item.label}</div>
+                    </div>
+                ))}
+            </div>
         </MapContainer>
     );
 };
+
+
+
 
 export default MapView;

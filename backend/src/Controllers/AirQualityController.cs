@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudentApp.Data;
 using System.Threading.Tasks;
+using StudentApp.Models;
 
 namespace NetBackend.Controllers;
 
@@ -27,7 +28,8 @@ public class AirQualityController : ControllerBase
                 r.Id,
                 r.SensorId,
                 aqiValue = r.AqiValue,
-                r.RecordedAt
+                r.RecordedAt,
+                location = r.Sensor.Location,
             })
             .ToListAsync();
 

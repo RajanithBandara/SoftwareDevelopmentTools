@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using StudentApp.Data;
 using Microsoft.AspNetCore.Identity;
+using StudentApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -20,7 +21,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:5175", "http://localhost:5176") // Adjust this to your frontend's URL
+        policy.WithOrigins("http://localhost:5175", "http://localhost:5176", "http://localhost:5177") // Adjust this to your frontend's URL
               .AllowAnyMethod()
               .AllowAnyHeader());
 });
